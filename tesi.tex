@@ -1,0 +1,60 @@
+\documentclass [11pt, a4paper]{report}
+
+\input{settings}
+
+\begin{document}
+
+%************************************************************
+%  Inizio Prima Pagina
+%************************************************************
+\begin{titlepage}
+\begin{center}
+\LARGE
+UNIVERSIT\`A DEGLI STUDI DI TRENTO\\
+\large
+Facolt\`a di Scienze Matematiche, Fisiche e Naturali\\
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=80pt,height=80pt]{unitn_logo.png}
+\end{figure}
+% \thispagestyle{empty}
+\large
+Corso di Laurea Magistrale in Informatica\\
+\rule{\linewidth}{0.5mm}
+\ \\ \ \\
+Tesi\\
+\ \\ \ \\ \ \\ \ \\
+\Large
+CloudyPeer: a framework for developing cloud aware peer-to-peer
+application.
+\end{center}
+
+\ \\ \ \\ \ \\ \ \\ \ \\ \ \\ \ \\ \ \\ \ \\ \ \\ \ \\ \ \\ \ \\ \ \\
+\large
+\flushleft \large Relatore: \hspace{\stretch{2}} \large Laureando:\\
+\large prof. Alberto Montresor   \hspace{\stretch{1}} \large Andrea Zito\\
+
+\normalsize
+\ \\ \ \\ \ \\
+\begin{center}
+ Anno Accademico 2010-2011
+\end{center}
+\end{titlepage}
+%************************************************************
+%  Fine Prima Pagina
+%************************************************************
+
+\tableofcontents
+
+\include{chapter_introduction}
+\include{chapter_cloudcast}
+\include{chapter_grapes}
+\include{chapter_cloudypeer}
+\include{chapter_cloudyrss}
+\include{chapter_evaluation}
+\include{chapter_conclusions}
+
+\bibliography{bibliography}{}
+\bibliographystyle{plain}
+\addcontentsline{toc}{chapter}{Bibliography}
+\end{document}
