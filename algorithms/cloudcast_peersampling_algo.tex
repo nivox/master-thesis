@@ -1,0 +1,157 @@
+%%************************************************************
+%% Cloudcast PeerSampling active protocol
+%%************************************************************
+\begin{algorithm}
+  \dontprintsemicolon
+  \While{\textbf{true}}{
+    \Wait \deltacyclon\ time units\;
+
+    \BlankLine
+    \nlset{(1)}\label{block1}
+    \Comment{If space permit, re-insert old entries that have been
+      sent in the previous cycle}
+
+    \While{\view.\msize() $< c$ \AND \request.\msize() $>$ 0} {
+      $r \leftarrow$ \request.\mget(random(\request.\msize()))\;
+      \view.\mput($r$, min(\view.\mget($r$), \request.\mget($r$)))\;
+    }
+
+    \BlankLine
+    \nlset{(2)}\label{block2}
+    \Comment{Increase age of all nodes in the view}
+    \ForEach{$r \in$ \view}{
+      \view.\mput($r$, \view.\mget($r$) + 1)\;
+     }
+
+    \BlankLine
+    \nlset{(3)}\label{block3}
+    \Comment{Select oldest node in the view}
+    $q \leftarrow \arg\max_r$ \view.\mget($r$)\;
+    \view.\mremove($q$)\;
+
+    \If {$q \equiv C$}{
+      \BlankLine
+      \nlset{(4)}\label{block4}
+      \Comment{If $q$ represewnt the \cloud, send request for it's view}
+      \Send $\langle$ \GET, ``view'' $\rangle$ \TO $C$\;
+    }
+    \Else{
+      \BlankLine
+      \nlset{(5)}\label{block5}
+      \Comment{Else fill up request, add local descriptor and send to $q$}
+      \request.\mclear()\;
+      \While{\request.\msize() $< g - 1$ \AND \view.\msize() $>$ 0}{
+        $r \leftarrow $ \view.\mget(random(\view.\msize()))\;
+        \request.\mput($r$, \view.\mget($r$))\;
+        \view.\mremove($r$)\;
+      }
+      \request.\mput($p$, 0)\;
+      $res \leftarrow$ \request.\msize()\;
+
+      \BlankLine
+      \nlset{(6)}\label{block6}
+      \Send $\langle$ \REQUEST, $p$, \request $\rangle$ \TO $q$\;
+    }
+  }
+  \caption{\cloudcast\ \peersampling\ active thread}
+  \label{algo:cloudcast_original_active}
+\end{algorithm}
+
+
+%%************************************************************
+%%  Cloudcast PeerSampling passive protocol (peer)
+%%************************************************************
+\begin{algorithm}
+  \dontprintsemicolon
+  \On{\Receive $\langle$ \REQUEST, $q$, $m$ $\rangle$}{
+    \BlankLine
+    \nlset{(7)}\label{block7}
+    \Comment{Fill up \reply and send it}
+    \reply.\mclear()\;
+    $r \leftarrow $ \view.\mget(random(\view.\msize()))\;
+    \lIf{$r \neq q$}{\reply.\mput($r$, \view.\msize())}\;
+    \view.\mremove($r$)
+
+    \nlset{(8)}\label{block8}
+    \Send  $\langle$ \REPLY, $p$, \reply $\rangle$ \TO $q$
+
+    \BlankLine
+    \nlset{(9)}\label{block9}
+    \Comment{Insert \request's descriptor in \view}
+    \While{\view.\msize() $< c - res$ \AND $m$.\msize() $>$ 0} {
+      $r \leftarrow$ $m$.\mget(random($m$.\msize()))\;
+      \view.\mput($r$, min(\view.\mget($r$), $m$.\mget($r$)))\;
+    }
+  }
+
+  \BlankLine
+  \On{\Receive $\langle$ \REPLY, $q$, $m$ $\rangle$}{
+    \nlset{(10)}\label{block10}
+    \Comment{Insert \reply's descriptor in \view}
+    $res \leftarrow 0$\;
+    \ForEach{$r \in m$ }{
+      \If{\view.\msize() $< c$}{
+        \view.\mput($r$, min(\view.\mget($r$), $m$.\mget($r$)))\;
+      }
+    }
+  }
+  \caption{\cloudcast\ \peersampling\ passive thread (peers)}
+  \label{algo:cloudcast_original_passive_peers}
+\end{algorithm}
+
+%%************************************************************
+%% Cloudcast PeerSampling passive protocol (cloud)
+%%***********************************************************
+
+\begin{algorithm}
+  \dontprintsemicolon
+  \On{\Receive $\langle$ \VIEW, $v$, $t$ $\rangle$}{
+    \nlset{(11)}\Comment{Simulate request}\;\label{block11}
+    \request.\mclear()\;
+    \While{\request.\msize() $< g - 1$ \AND \view.\msize() $>$ 0}{
+      $r \leftarrow $ \view.\mget(random(\view.\msize()))\;
+      \request.\mput($r$, \view.\mget($r$))\;
+      \view.\mremove($r$)\;
+    }
+    \request.\mput($p$, 0)\;
+
+    \BlankLine
+    \nlset{(12)}\label{block12}
+    \Comment{Simulate cloud reply}
+    \reply.\mclear()\;
+    \lIf{$now() - t >$ \deltacyclon $* k$}{\reply.\mput($C$, 0)}\;
+
+    \lIf{$now() - t >$ \deltacyclon$ / k$}{\reply.\mput($C$, 0)}\;
+
+    \While{\reply.\msize() $< g$ \AND $v$.\msize() $>$ 0}{
+      $r \leftarrow $ $v$.\mget(random($v$.\msize()))\;
+      \If {$r \neq p$}{\reply.\mput($r$, $v$.\mget($r$))}
+      $v$.\mremove($r$)\;
+    }
+
+    \BlankLine
+    \nlset{(13)}\label{block13}
+    \Comment{Insert descriptors of \reply in \view}
+    \ForEach{$r \in$ \reply}{
+      \If{\view.\msize() $< c$}{
+        \view.\mput($r$, min(\view.\mget($r$), \reply.\mget($r$)))\;
+      }
+    }
+
+    \BlankLine
+    \nlset{(14)}\label{block14}
+    \Comment{Insert descriptors of \request in $v$}
+    \ForEach{$r \in$ \request}{
+      \If{$v$.\msize() $< c$}{
+        $v$.\mput($r$, min($v$.\mget($r$), \request.\mget($r$)))\;
+      }
+    }
+
+    \BlankLine
+    \nlset{(15)}\label{block15}
+    \Comment{Write the new view in the cloud}
+    \Send $\langle$ \PUT, ``view'' $v \rangle$ \TO $C$\;
+  }
+  \caption{\cloudcast\ \peersampling\ passive thread (cloud)}
+  \label{algo:cloudcast_original_passive_cloud}
+\end{algorithm}

@@ -1,0 +1,89 @@
+%%************************************************************
+%% Cloudcast active protocol
+%%************************************************************
+\begin{algorithm}
+  \dontprintsemicolon
+  \Init $bakC \leftarrow$ \NONE\;
+  \Init $T \leftarrow$ now()\;
+  \While{\textbf{true}}{
+    \Wait \deltacyclon\ time units\;
+
+    \Comment{Perform block 1-3}
+    \BlankLine
+    \nlset{(a1)}\label{blocka1}
+    \Comment{If the last active cycle was with the cloud and no reply
+      was received, recover the cloud descriptor}
+    \If{$bakC \neq$ \NONE}{
+      \view.\mput($backC$)\;
+      $bakC \leftarrow$ \NONE\;
+    }
+
+    \BlankLine
+    \nlset{(a2)}\label{blocka2}
+    \Comment{If we remain without neighbours, forcely select cloud descriptor}
+    \If{$q =$ \NONE}{
+      $q \leftarrow C$\;
+    }
+
+    \BlankLine
+    \nlset{(a3)}\label{blocka3}
+    \If{now() - $T >$ $\tau silence$}{
+      \Comment{Add a new cloud descriptor}
+      \DoWithProbability{$p_{spawn-cloud}$}{
+        \view.\mput($C$, 0)\;
+      }
+    }
+
+    \BlankLine
+    \If{$q \equiv C$}{
+      \Comment{Perform block 4}
+      \nlset{(a4)}\label{blocka4}
+      $backC \leftarrow q$\;
+      $T =$ now()\;
+    }
+    \Else{
+      \Comment{Perform block 5}
+      \nlset{(a5)}\label{blocka5}
+      \Send $\langle$ \REQUEST, $p$, \request, $T$ $\rangle$ \TO $q$\;
+    }
+  }
+
+  \caption{Additions to \cloudcast\ \peersampling\ active thread}
+  \label{algo:cloudcast_addition_active}
+\end{algorithm}
+
+%%************************************************************
+%% Cloudcast passive protocol
+%%************************************************************
+\begin{algorithm}
+  \dontprintsemicolon
+  \On{\Receive $\langle$ \REQUEST, $q$, $m$, $qT$ $\rangle$}{
+    \Comment{Perform block 7}
+    \BlankLine
+    \nlset{(a6)}\label{blocka6}
+    \lIf{$qT > T$}{$T \leftarrow qT$}
+    \Send  $\langle$ \REPLY, $p$, \reply, $T$ $\rangle$ \TO $q$
+    \BlankLine
+    \Comment{Perform block 9}
+  }
+
+  \BlankLine
+  \On{\Receive $\langle$ \REPLY, $q$, $m$, $qT$ $\rangle$}{
+    \Comment{Perform block 10}
+    \BlankLine
+    \nlset{(a7)}\label{blocka7}
+    \lIf{$qT > T$}{$T \leftarrow qT$}
+  }
+
+  \BlankLine
+  \On{\Receive $\langle$ \VIEW, $v$, $t$ $\rangle$}{
+    \nlset{(a8)}\label{blocka8}
+    \Comment{Record successfull conclusion of \cloud\ active }
+    $bakC \leftarrow$ \NONE\;
+
+    \BlankLine
+    \Comment{Perform blocks 11-15}
+  }
+  \caption{Additions to \cloudcast\ \peersampling\ passive thread}
+  \label{algo:cloudcast_addition_passive}
+\end{algorithm}

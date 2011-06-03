@@ -3,9 +3,9 @@ BIBTEX="bibtex"
 NAME="tesi"
 FILE="$NAME.tex"
 
-.PHONY: all pdf index clean
+.PHONY: all pdf index clean images
 
-all: biblio index
+all: biblio index images pdf
 
 pdf:
 	${PDFLATEX} ${NAME}

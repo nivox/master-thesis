@@ -1,11 +1,34 @@
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 
+%\usepackage[lofdepth,lotdepth]{subfig}
 \usepackage{graphicx}
 \graphicspath{{images/}}
 
 \usepackage{float}
-\usepackage{subfloat}
-\usepackage{subfigure}
+\usepackage{subfig}
 
 \usepackage{url}
+
+%************************************************************
+% Algotithms settings
+%************************************************************
+\usepackage[ruled,vlined]{algorithm2e}
+\SetKwFor{On}{on}{}{}
+\SetKwFor{Thread}{thread}{}{}
+\SetKwFor{DoWithProbability}{with probability}{do}{}
+\SetArgSty{textrm}
+
+\SetKw{NONE}{none}
+\SetKw{AND}{and}
+\SetKw{OR}{or}
+\SetKw{NOT}{not}
+\SetKw{TO}{to}
+\SetKw{FROM}{from}
+\SetKw{Init}{init}
+\SetKw{Wait}{wait}
+\SetKw{Send}{send}
+\SetKw{Receive}{receive}
+
+\SetKwComment{Comment}{\%~~}{}
+\SetCommentSty{textit}

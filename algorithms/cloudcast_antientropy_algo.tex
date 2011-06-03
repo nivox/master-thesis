@@ -1,0 +1,52 @@
+%%************************************************************
+%% Cloudcast Antientropy
+%%************************************************************
+\begin{algorithm}
+  \dontprintsemicolon
+
+  \Thread{\textbf{active}}{
+    \While{\textbf{true}}{
+      \Wait \deltaAntiEntropy\ time units\;
+      \BlankLine
+      \nlset{(ae1)}\label{ae-block1}
+      \Comment{Select remote peer to resolve differences with}\;
+      $q \leftarrow peersampler.$getRandomPeer()\;
+
+      \BlankLine
+      \If{$q \equiv C$}{
+        \nlset{(ae1)}\label{ae-block2}
+        \Comment{Resolve differences with the \cloud}\;
+        \Send $\langle$ \GETALL\ $\rangle$ \TO $C$\;
+        \Receive $\langle cloud\_data \rangle$ \FROM $C$\;
+        $data \leftarrow$ resolve\_differences($data$, $cloud\_data$)\;
+        \Send $\langle$ \PUTALL, $data$ $\rangle$ \TO $C$\;
+      }\Else{
+        \nlset{(ae2)}\label{ae-block3}
+        \Comment{Resolve differences with peers based on current strategy}\;
+        \If{$strategy = $ \PUSH\ \OR $strategy = $ \PUSHPULL}{
+          \Send $\langle$ \REQUEST, $data, p \rangle$ \TO $q$\;
+        } \Else {
+          \Send $\langle$ \REQUEST, \NONE, $p \rangle$ \TO $q$\;
+        }
+
+        \BlankLine
+        \If{$strategy = $ \PULL\ \OR $strategy = $\PUSHPULL}{
+          \Receive $\langle$ \REPLY, $updated\_data \rangle$ \FROM $q$\;
+          $data \leftarrow updated\_data$\;
+        }
+      }
+    }
+  }
+
+  \On{\Receive $\langle$ \REQUEST, $remote\_data, q \rangle$}{
+    \nlset{(ae3)}\label{ae-block4}
+    \Comment{Resolve differences between local and remote data}\;
+    $data \leftarrow$ resolve\_differences($data$, $remote\_data$)\;
+    \BlankLine
+    \If{$strategy = $ \PULL\ \OR $strategy = $ \PUSHPULL}{
+      \Send  $\langle$ \REPLY, $data \rangle$ \TO $q$\;
+    }
+  }
+  \caption{\cloudcast\ \antientropy\ \epidemic\ broadcast}
+  \label{algo:cloudcast_antietropy}
+\end{algorithm}
