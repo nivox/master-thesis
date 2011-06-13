@@ -27,9 +27,9 @@
 
     \BlankLine
     \nlset{(a3)}\label{blocka3}
-    \If{now() - $T >$ $\tau silence$}{
+    \If{now() - $T >$ \maxsilence}{
       \Comment{Add a new cloud descriptor}
-      \DoWithProbability{$p_{spawn-cloud}$}{
+      \DoWithProbability{\spawnprob}{
         \view.\mput($C$, 0)\;
       }
     }
