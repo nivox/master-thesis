@@ -1,44 +1,72 @@
 \chapter{Introduction}
+\textit{Cloud computing} represents an important tecnology in the
+modern Internet era. The promises of virtually infinite storage
+capacity and computation resources, in conjunction with the fact that
+costs are computed with a \textit{pay-per-use} model, make it very
+appealing to small companies. Recent years have seen the rise of Internet based
+\textit{start-up}, which, by exploiting the \cloud, have the opportunity
+to compete on equal terms with software giants like Microsoft
+and Google. A representative example is Dropbox which, relaying on
+\amazonsss service, has become, in a very short time, a dominant player
+in the sector of file storage.
 
-Developing application based on the \ptop paradigm is often a complex
-and long task. Other than focusing on the particular application
-domain problem a lot of work must go into designing and implementing
-the base infrastructure upon which the target solution will function.
+The increasing interest in \cloud computing has resulted in the
+reduction of the appeal of another trend of the last decade: the \ptop
+paradigm. This model displays similar characteristics with respect to
+the \cloud, but, at the same time, it does presents substantial
+differences. The
+cost of operating a \ptop architecture is virtually non-existent,
+making it extremely desirable from an economic point of view. At the
+same time, however, the \cloud offers a much higher availability,
+making it a more appropriate solution for those businesses which are not
+well suited to the \textit{best effort} philosophy of \ptop.
 
-Most often the infrastructure is composed by standard protocols which
-must be reinvented each and every time to fit the task at hand. Such
-reinvention is in itself a bad habit but most importantly is a waste
-of energy and talent of the application developer.
+Both the academic community and the commercial world have tried to mix
+the two approaches with the intent of achieving the above mentioned
+properties at the same time. The two main strategies which have
+emerged see the
+addition of peers to a centralized solution on one side and the
+extension of existing \ptop systems with elastic computing nodes on
+the other.
+For example, the first tactic has been exploited in
+video-on-demand~\cite{PeerAssistedVoD} and file
+distribution~\cite{BitTorrentRobustness}~\cite{AmazingStore}
+applications where storage
+and bandwidth costs are reduced, when availability
+constraints allow it, by off-loading to clients the burden of
+providing the service. The second strategy, instead, has been applied
+to bulk-synchronous content distribution~\cite{AngelsInCloud}
+and online backup~\cite{PeerAssistedOnlineDataBackup} scenarios to
+satisfy requirements beyond the reach of a \ptop system.
 
-Multiple framework were developed both by the
-academic~\cite{AntHill}~\cite{P2PFramework},
-commercial~\cite{JXTA}~\cite{dotNETp2p} and open source~\cite{GNUnet}
-world. Looking at the proposed example two main design philosophies
-arise: on one side there are domain specific toolkit aimed at a
-particular scenario while on the other end there are general framework
-which only provide the very basic building block needed to build a
-complex system.
+A novel approach to the problem, which greatly differentiates itself
+from the previous examples, has been recently proposed. The
+illustrated architecture, called \cloudcast~\cite{Cloudcast}, sees an
+integration of the \cloud in all the level of the \ptop system, making
+the two of them a coherent entity. To achieve this task, \cloudcast
+exploits a number of standard \ptop protocols, some of which have been
+modified to take into account the new requirements. The number of
+entities involved in the architecture make developing applications
+based on it a quite long and error-prone task. Other than focusing on
+the target domain, a lot of work must go into designing and implementing
+the base infrastructure.
 
-\cloudypeer can be placed in the first category as it does provide
-reusable components aimed at the development of information
-dissemination applications. The novel characteristic of the framework
-is to provide a seamless integration of a storage \cloud service to
-the \ptop network.
+This kind of problem is indeed true for many \ptop oriented solutions
+and has been partially solved via the creation of multiple frameworks
+by the academia~\cite{AntHill}~\cite{P2PFramework},
+enterprise bodies~\cite{JXTA}~\cite{dotNETp2p} and open-source
+projects~\cite{GNUnet}. The general idea is to simplify the burden
+imposed on the developer, either by providing domain specific solutions
+or by offering the building blocks needed to design a complex system.
 
-
-\begin{itemize}
-  \item Problem statement: economics of peer-to-peer with availability
-    of the cloud
-  \item Survey of existing solutions.
-    Adding peer to centralized solution \cite{PeerAssistedVoD}
-    \cite{BitTorrentRobustness}
-    \cite{RapidCloudProvisioningLeaveragingP2P} \cite{AmazingStore}.
-
-    Adding cloud to peer-to-peer system \cite{AngelsInCloud}, \cite{PeerAssistredOnlineDataBackup}
-
-  \item Introduction of cloudcast
-  \item Introduction of cloudypeer
-  \item Introduction to the case study application cloudyrss
-\end{itemize}
-
-Note about the organization of following chapters.
+\paragraph{Contributions} In this thesis we present the efforts that
+have been made to develop a working implementation of the \cloudcast
+infrastructure. Furthermore we describe and evaluate the improvements
+that have been produced while performing the task. The second half of
+the work deals with the analysis and the implementation of
+\cloudypeer, a general \textit{Java} framework which, exploiting \cloudcast,
+provides the means to easily build applications focused on the content
+diffusion scenario. In conclusion, a practical example is presented in
+the form of a \textit{RSS} delivery software, called \cloudyrss, which
+has been developed to prove the viability of the proposed approach and
+will be used, in future works, to evaluate it in a real context.
