@@ -29,8 +29,8 @@ of every single component by simply modifying a configuration
 parameter thus allowing experimenting with different
 combinations without the need to touch a single line of code.
 
-The implementation is based on the \emph{Java} programming language and it's
-compatible with version 1.5 or higher. The
+The implementation is based on the \emph{Java} programming language
+and it is compatible with version 1.5 or higher. The
 choice of \emph{Java} is motivated by the fact that it provides a rich
 \emph{standard library} and its object oriented nature makes it a
 perfect candidate for designing an extensible framework. Furthermore
@@ -39,7 +39,7 @@ the existence of many commercial and open-source projects written in
 in term of code reuse.
 \ \\
 In the following sections will be analyzed the architecture of
-\cloudypeer by describing it's major components and their interactions.
+\cloudypeer by describing it is major components and their interactions.
 Furthermore will be described the various module's
 built-in implementations and the means offered to developers to extend
 the framework itself.
@@ -53,7 +53,7 @@ following portion of the chapter are:
   \item serif font for files and directories, i.e. \textsf{ExampleFile.java},
     \textsf{./example\_directory/}
   \item italics font with capitalized initials for module names,
-    i.e. \textit{Example Module)}
+    i.e. \textit{Example Module}
  \item typewriter font for class names, i.e. \texttt{ExampleClass}
   \item italics font followed by parenthesis for methods
     i.e. \textit{exampleMethod()}
@@ -97,9 +97,8 @@ access to the application data. However such a direct dependency
 does not fit with
 the generality requirement of the framework. For this reason the
 \store abstraction layer has been added: this component provides a general
-\api for accessing and managing the application data which other
-modules can use to modify the application state.
-
+\api for accessing and managing the application's data exploitable by
+other modules.
 Application designers must create their own \store implementation
 reflecting their storage model. To simplify this task the framework
 provides a built-in implementation which takes care of most of the
@@ -137,15 +136,14 @@ peer selection strategies, of which \texttt{RandomPeerSelector} is a
 simple example.
 
 The remaining two classes instead deserve more attention.
-
-\noindent\texttt{DynamicProviderHelper} is an utility component which
+\texttt{DynamicProviderHelper} is an utility component which
 provides the infrastructure needed to dynamically load object's
-implementations. It performs hierarchical parsing of provider's
-configurations file enabling for end-user overwriting of the
-preferences and handles the instantiation of the correct
+implementations. It performs a hierarchical parsing of provider's
+configurations file, enabling end-user to overwrite the built-in
+values, and handles the instantiation of the correct
 implementation via name mappings. Since its presence results completely
-transparent to users of \cloudypeer it will not be proposed a detailed
-description of its working. Developers interested in extending the
+transparent to users of \cloudypeer, it is not proposed a detailed
+description. Developers interested in extending the
 framework with new protocols may refer to the \javadoc of the project
 for further information on how to exploit the dynamic loading procedures.
 
@@ -165,14 +163,14 @@ properties and furthermore it offers support for opaque parameters
 and resources. Such features represent the public \api and
 only reflect part of the offered functionalities: indeed
 \texttt{GossipProtocol} implements many other common procedure aimed at
-simplifying the thread management and the overall lifecycle of the
+simplifying the thread management and the overall life-cycle of the
 implementation.
 
 \section{\networkhelper}
 The \networkhelper module mission is to provide a simple abstraction
 layer to the actual networking implementation. Its services are
-available to any class wanting to use them, however it's usage is not
-required to build a protocol in \cloudypeer. It's design is somewhat
+available to any class wanting to use them, however its usage is not
+required to build a protocol in \cloudypeer. Its design is somewhat
 inspired to the relative component of \grapes, but with some
 additional features.
 
@@ -192,7 +190,7 @@ to complete a cycle. Even though such requirement may be efficiently
 achieved only by using datagram messages, the resulting code complexity is
 substantial: by delegating this task to the \networkhelper, protocols
 implementation can be much simpler. Even better, this strategy allow
-for far more effective code reusage: custom connection schemes can be
+for far more effective code re-usage: custom connection schemes can be
 implemented as a \networkhelper object and made available to
 all \cloudypeer component by simply changing a configuration parameter.
 
@@ -204,39 +202,39 @@ all \cloudypeer component by simply changing a configuration parameter.
 \end{figure}
 
 A \networkhelper instance can be initialized by calling either the
-\textit{getDefaultInstance} or \textit{getInstance} methods. The former
+\textit{getDefaultInstance()} or \textit{getInstance()} methods. The former
 will load the default implementation as specified in the bundled
 configuration file. The latter allows the caller to specify the
 implementation to use. Another way to create a \networkhelper instance
-is to ``configure'' it via the \textit{configureDefaultInstance} or
-\textit{configureInstance} methods. In this way the newly created
+is to ``configure'' it via the \textit{configureDefaultInstance()} or
+\textit{configureInstance()} methods. In this way the newly created
 instance will be stored and can be the recovered calling the
-\textit{getConfiguredInstance} method.
+\textit{getConfiguredInstance()} method.
 
 Before a class is allowed to exploit a \networkhelper instance it must
 implement the \texttt{NetworkClient} interface and
-``register'' itself by calling \textit{registerClient}. The
+``register'' itself by calling \textit{registerClient()}. The
 registration phase maps the actual client instance to a specified
 identifier. At this point the class can send datagram messages or
 initiate connections to its remote counterparts. This means that a
 \texttt{NetworkClient} can communicate only with remote
-\texttt{NetwotkClient} instances sharing the same identifier.
+\texttt{NetworkClient} instances sharing the same identifier.
 
 \ \\
 At the current stage only one \networkhelper implementation is
 distributed with the framework: \texttt{SimpleNetworkHelper}. This class
 relays on \emph{Java}'s network stack and exploits threads to allow
 concurrent connections. In particular connection oriented
-communication is achieved via \texttt{TCP} connection.
-Another implementation, which hasn't been completed due to time
+communication is achieved via the \texttt{TCP} protocol.
+Another implementation, which has not been completed due to time
 constraints, is based upon \grapes's \networkhelper thus inheriting
-the \emph{NAT  traversal} supports.
+the \emph{NAT traversal} supports.
 
 \section{\cloudhelper}
 The support for the \cloud storage service is offered via the
 \cloudhelper module. Figure~\ref{fig:cloudypeer-cloudhelper-relations}
 shows the components belonging to the module and their relations.
-The central component of this module is \texttt{StorageCloud} which
+The central entity is \texttt{StorageCloud} which
 implements the actual \cloud interaction logic. The offered \api, reported
 in figure~\ref{fig:cloudypeer-cloudhelper-class}, deals with the
 common operation supported by the various storage services. The
@@ -271,13 +269,13 @@ loading strategy.
 The framework distribution ships two built-in \cloudhelper implementation
 respectively for \textit{Amazon Simple Storage Service} and a
 \textit{MySQL} backed \cloud service. The former is built upon
-the official \textit{Amazon AWS SDK for Java}~\cite{AWS4Java} and it's
+the official \textit{Amazon AWS SDK for Java}~\cite{AWS4Java} and it is
 configured under the ``amazons3'' provider name, the latter
 exploits the \textit{MySQL Connector/J}~\cite{MySQLConnectorJava} and
-it's made available via the the ``mysql'' provider name.
+it is made available via the the ``mysql'' provider name.
 
 The \textit{MySQL} \cloud is compatible with the one supported by
-\grapes hence allowing using the same instance for both the
+\grapes hence allowing the use of the same instance for both the
 \peersampling and the actual storage. Table~\ref{tbl:mysql-cloud}
 shows the base schema which a table must adhere to in order to being
 used as a \cloud.
@@ -305,7 +303,7 @@ used as a \cloud.
 \section{\textit{Store} module}
 This module represents a key component of the \cloudypeer architecture
 as it is responsible for all the storage-related tasks. As can be seen
-by the extensive \api shown in figure
+by the extensive \api, shown in figure
 \ref{fig:cloudypeer-store-class}, such operations range from simple
 listing and management duties to much more complex procedures aimed at
 efficiently resolving differences between instances.
@@ -319,18 +317,18 @@ efficiently resolving differences between instances.
 
 The former kind of operations are quite intuitive and for the most
 part should not require additional comments. The only noteworthy
-detail is that the version of \textit{listEntries} without parameters
+detail is that the version of \textit{listEntries()} without parameters
 has a peculiar behavior: the returned values may represent only a
 partial view of the entire entries: specifically the ``active''
 portion. The definition of ``active'' is application dependent and
 expresses some innate property of the domain. For instance in a news
-distribution scenario it may be based on time constraint as it's likely
+distribution scenario it may be based on time constraint as it is likely
 that users are not interested in news which are too old.
 
-Shifting the focus to the more complex operation, let's look at the
+Shifting the focus to the more complex operations, let's look at the
 two variants of
-\textit{compareStoreEntries}: these methods compare the \texttt{Store}
-state against an array of entries and compile a report which specifyies
+\textit{compareStoreEntries()}: these methods compare the \texttt{Store}
+state against an array of entries and compile a report which specifies
 two entries' set. The first contains all the entries
 which are \textit{fresher} on the local instance while the second embodies
 the ones that should be updated due to being old or unknown.
@@ -340,11 +338,11 @@ Such information is of major importance to resolve the differences between
 entry with the fresher one or by updating only the portion of data
  which is changed. The second method is based on the
 concept of \textit{diff} and \textit{patch}: the two entries are
-compared and a list of the differences is computed (diff),
+compared and the list of their differences is computed (diff),
 subsequently the oldest entry is updated by replaying the listed
 modification (patch).
 
-Remembering that we're working in a \ptop scenario an immediate
+Remembering that we are working in a \ptop scenario an immediate
 problem arises: we cannot transfer the whole entry to perform the
 diff or this would nullify the purpose of the procedure. Similarly
 we cannot maintain a record of all the remote instances states to
@@ -359,9 +357,9 @@ compute an hash value for each of them. Once a remote instance receives
 the list of hashes, it can compute its hashes and then
 compare the two results. An even better approach would be to use some
 \textit{rolling  checksum}~\cite{Rsync} scheme.
-The \api enables this line of action via the functions:
-\textit{produceStoreEntriesDiffData}, \textit{diffStoreEntries} and
-\textit{patchStoreEntries}.
+The \api enables this line of action via the methods:
+\textit{produceStoreEntriesDiffData()}, \textit{diffStoreEntries()} and
+\textit{patchStoreEntries()}.
 
 The last feature provided by the \textit{Store} module is represented
 by the interface \texttt{StoreUpdateHandler} which allows the event
@@ -378,12 +376,12 @@ driven notification of storage changes.
 As shown in the module overview proposed in
 figure~\ref{fig:cloudypeer-store-relations} the framework is
 distributed with a built-in \texttt{Store} implementation providing
-most of the basic functionality while delegating only the management of the
+most of the basic functionalities, delegating only the management of the
 actual persistence and \textit{diff} strategy. Developers can design their
 own persistence layer by subclassing
 \texttt{Simple\-Store\-Persistence\-Class} and developing \textit{write}, \textit{read} and
 \textit{list} procedures. Two default implementations of this class are
-made available: the first exploits the \cloudhelper and uses a \cloud
+made available: the first exploits the \cloudhelper to use a \cloud
 instance as storage, the second instead keeps all its entries in
 memory and is intended as a local storage implementation.
 
@@ -413,7 +411,7 @@ Given that this work has been mainly concerned with implementing a
 is represented by \texttt{CloudCast}. However support for
 conventional protocols can be added simply by subclassing
 \texttt{PeerSampler}. The task if further simplified by the fact that
-\grapes already implements some of them, hence it's sufficient to
+\grapes already implements some of them, hence it is sufficient to
 write a wrapper which just performs the data conversion and delegates
 all the real work to the library. Indeed this very strategy is adopted
 by the built-in \texttt{JGrapesCloudCast} implementation.
@@ -456,7 +454,7 @@ The structure of the module is for itself quite simple and intuitive as
 can be noted analyzing the diagram shown in figure
 \ref{fig:cloudypeer-epidemicbroadcast-relations}. By taking into
 account the picture as a whole however it can be note that the module
-display a strong dependence factor. Indeed here it's possible to see how
+display a strong dependence factor. Indeed here it is possible to see how
 the \api infrastructure thus far defined comes into play to simplify
 the development of high-level protocols. By heavily relaying on the
 other modules, the implementation of the two \epidemic broadcast
@@ -482,8 +480,8 @@ former uses a \PUSHPULL\ strategy and displays support for the \cloud while
 the latter implements a standard \rumormongering algorithm with peer
 feedback and termination based on counter.
 Even though the implementations follow closely what has been stated in
-section~\ref{sec:epidemicbroadcast}, in the following paragraphs will be
-explained in detail the procedures executed with the intent of
+section~\ref{sec:epidemicbroadcast}, in the following paragraphs are
+explained in detail the executed procedures with the intent of
 clarifying the interactions with the various \cloudypeer components.
 
 \begin{figure}[h]
@@ -504,7 +502,7 @@ one for the entry to be pulled and one for the entry to be pushed.
 At this point $q$ produces and sends the data which  $p$ uses to generate
 the \textit{diff} information needed to patch $q$'s \texttt{Store}. The
 same process is subsequently performed with switched roles concluding
-the messages exchange between the two peer which at this point can
+the messages exchange between the two peers which at this point can
 update their respective \texttt{Store} and conclude the execution.
 
 \begin{figure}[h]
@@ -524,8 +522,8 @@ to the ones described for the previous case, however the passive
 nature of the \cloud causes a major difference: the whole data is
 transferred in both the direction. This fact means that data exchanged
 with the \cloud may display much higher bandwidth costs with respect
-to the same exchange between two peers. Fortunately, as will be
-discussed later, this problem doesn't have an high impact on the
+to the same exchange between two peers. Fortunately, as it is
+discussed later, this problem does not have an high impact on the
 overall cost.
 
 \ \\
@@ -535,7 +533,7 @@ behavior of the \rumormongering implementation. Here the similarities
 with the first case are much more evident. Indeed the higher half of the
 diagram display exactly the same operation. The few differences are
 represented by the fact that updates only flow in one direction and
-more importantly that the triggering factor isn't the firing of a
+more importantly that the triggering factor is not the firing of a
 timer but instead the notification by the \texttt{Store} which a new
 update is available.
 
@@ -548,28 +546,28 @@ update is available.
 
 \clearpage
 \section{Building and using the framework}
-To conclude the analysis of the framework in this section will be
+To conclude the analysis of the framework, in this section is
 explained how \cloudypeer can be compiled and used by developers to
 write their \ptop applications.
 
 As for the other library developed during the course of this thesis,
 the code is available via a \github repository~\cite{cloudypeer-repo}
 with the last version available at the time of this writing tagged
-by \thesistag.
+with \thesistag.
 
-The distribution already contains all the \textit{Java} dependencies
-included \jgrapes. To built the framework is sufficient to invoke the
-\texttt{dist} target of the \textit{ant} build file. This command will
-generate a directory named \texttt{dist} containing the \textit{jar}
+The distribution already contains all the \textit{Java} dependencies,
+including \jgrapes. Thus to build the framework it is sufficient to invoke the
+\textit{dist} target of the \textit{ant} build file. This operation will
+generate a directory named \textsf{dist/} containing the \textit{jar}
 files of \cloudypeer and all the other dependencies.
 
 At this point the framework can be used by simply adding the various
 \textit{jars} to the \textit{Java classpath}. To successfully use the
-\jgrapes based \peersampling protocol implementation however the
-\textit{Java} property \texttt{java.library.path} must be configured
-to include the directory containing all the native libraries used by
-\jgrapes. Such a directory is produced during the building process of
-\jgrapes under the name \texttt{dist}.
+\jgrapes based \peersampling protocol implementation however, the
+\textit{Java} property ``java.library.path'' must be configured
+to include the directory containing all the relative native
+libraries. Such a directory is produced during the building process of
+\jgrapes under the name \textsf{dist}.
 
 The listing available in figure~\ref{lst:cloudypeer-example-app}
 provide a fully working, even if minimal, application based on \cloudypeer.
@@ -580,7 +578,7 @@ required.
 
 This example only serves the role of demonstrating the convenience
 offered by the framework, more elaborated examples are available in
-the codebase of \cloudypeer under the \texttt{test} pckage.
+the codebase of \cloudypeer under the \textit{test} package.
 
 \begin{figure}[H]
   \lstinputlisting[language=Java,basicstyle=\footnotesize,numberstyle=\footnotesize,numbers=left,frame=leftline]{code/cloudypeer-example.java}
@@ -597,8 +595,8 @@ distribution.
 Let's start by analyzing the delays in the delivery of \textit{news}
 considering a dynamic scenario. Figure
 \ref{fig:cloudypeer-oscillating-delays} match plot
-\ref{fig:cloudcast-sim-oscillating-delays} which is reproposed here
-for convenience. Due to lack of resources it hasn't been possible to
+\ref{fig:cloudcast-sim-oscillating-delays} which is re-proposed here
+for convenience. Due to lack of resources it has not been possible to
 perform the test under exactly the same conditions: the maximal network
 size had to be limited to $170$ nodes instead of $500$. However all
 the other parameters have been maintained: the experiment has lasted 2
@@ -611,7 +609,7 @@ As can be seen the delays obtained by the \cloudypeer implementation
 are slightly smaller with respect to the ones recorded during the
 simulation.
 This variation can be partially attributed to
-the different network sizes, however it's our opinion that the
+the different network sizes, however it is our opinion that the
 improved result is achieved mostly thanks to the more elaborated
 \rumormongering protocol which, exploiting peer's feedback, is more
 effective in quickly diffusing updates.
@@ -631,12 +629,12 @@ effective in quickly diffusing updates.
 \end{figure}
 
 Another interesting measure of evaluation is represented by the
-traffic generated by the system. In this case we're not interested
+traffic generated by the system. In this case we are not interested
 in the actual number of bytes exchanged but instead we focused our
-analysis on the number of times each node \textit{pushes} some
+analysis on the number of times each node \textit{pushed} some
 data. The rationale behind this reasoning is that the framework allows
 to easily change the actual network implementation and \textit{diff}
-strategy, hence a measure influenced by these components wouldn't be
+strategy, hence a measure influenced by these components would not be
 of much value.
 
 The experiments have been setup to employ a network
@@ -644,7 +642,7 @@ which linearly grows up to a target size and exchanges \textit{news}
 generated with a $5$ minutes period for a total duration of one hour.
 Each configuration has been iterated $10$ times and the displayed
 values represent the aggregated statistics.
-Due to lack of time and resources it hasn't been possible to
+Due to lack of time and resources it has not been possible to
 experiment on networks with a more significative size; future works may
 fill this gap by providing more exhaustive results.
 

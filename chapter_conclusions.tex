@@ -1,41 +1,41 @@
 \chapter{Conclusions}
-In this thesis have been described the efforts aimed at crating a
-working implementation of the \cloudcast architecture which have
+In this thesis have been described the efforts aimed at creating a
+working implementation of the \cloudcast architecture, which have
 culminated in the creation of the \cloudypeer framework. In achieving
-this result a series of other accomplishment have been reached. First
+this result a series of other accomplishments have been reached. First
 and more importantly the original \cloudcast infrastructure has been
-improved with the addition of a recovery mechanism directed at
-guaranteeing the stability of the underlying \peersampling
+improved with the addition of a recovery mechanism directed to
+guarantee the stability of the underlying \peersampling
 protocol. Secondly a noteworthy endeavor has been targeted to resolve
 bugs and extend the functionalities of the \grapes toolkit in order
 to make it suitable to serve as foundation.
 
-The general performance of the implementation have been analyzed and
+The general performances of the implementation have been analyzed and
 confronted with the ones proposed in the original
 paper~\cite{Cloudcast}. Moreover, the enhancements to the protocol's
-algorithms have been evaluated, showing how the system benefit from
-their presence and at the same time the additional overhead
+algorithms have been evaluated, showing how the system benefits from
+their presence and at the same time how the additional overhead
 is overall negligible.
 
 The \cloudypeer framework has been described in detail, explaining how
-the various components interact one another and how developers can
+the various components interact with each other and how developers can
 easily extend its behavior to fit their need. This analysis has also
-served the purpose of proving the generality and ease of use feature
+served the purpose of proving the generality and ease of use features
 central to the framework's design.
 
 In conclusion it has been presented a concrete example application
-called \cloudyrss which serves the purpose of proving the viability of
+called \cloudyrss, which proves the viability of
 the proposed approach and the correctness of the described
 implementation.
 
 \paragraph{Future works}
-There are a number of interesting problem that have not been covered
+There are a number of interesting problems that have not been covered
 in this thesis due to lack of time. Concerning the \cloudcast
-architecture itself, one of the result proposed in the original
-paper~\cite{Cloudcast} showed that a major portion of the expense is
-caused by the \peersampling. An easy yet effective way to reduce its
+architecture itself, one of the results proposed in the original
+paper~\cite{Cloudcast} has shown that a major portion of the expense is
+caused by the \peersampling. An easy, yet effective, way to reduce its
 impact would be to study alternative \textit{bootstrapping} strategies
-not relying on the \cloud. Examples of such tactics could be:
+not based on the \cloud. Examples of such tactics are:
 \begin{itemize}
   \item Employing local and/or web based peer
     caches~\cite{GnutellaWebCache}~\cite{P2PVPN}
@@ -52,9 +52,12 @@ versioning~\cite{AmazonS3DevGuide}.
 
 Moving our focus on the actual implementation, an obvious extension
 would be the addition of more \cloud storage service
-providers. Moreover further work should be made to better adapt the
+providers and a greater variety of \peersampling protocols. Moreover
+further work should be made to better adapt the
 \cloud \descriptors handling to the peculiarities of the \grapes's
-cache design. In conclusion, a final effort which would greatly enhance
+cache design.
+
+In conclusion, a final effort which would greatly enhance
 the performances of the system is the development of a better \networkhelper
 implementation for the \cloudypeer framework, possibly relaying on the
 correspondent module of \grapes.
