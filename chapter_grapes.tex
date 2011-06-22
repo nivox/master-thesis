@@ -1,11 +1,11 @@
 \chapter{\grapes}
-\grapes (Generic Resource Aware P2P En- vironment for Streaming) is a
+\grapes (Generic Resource Aware P2P Environment for Streaming) is a
 toolkit providing a set of \textit{generic} and \textit{reusable}
 components for the development of \ptop application focused on
 streaming scenarios. The fundamental philosophy behind its design is
-to support as many different environment as possible while keeping at
+to support as many different environments as possible while keeping at
 a minimum the restrictions imposed on the applications employing it.
-For these reasons it's implemented as a pure C library without any dependencies
+For these reasons it is implemented as a pure C library without any dependencies
 on external libraries: as a result \grapes can be used on a variety
 of systems, from high-power servers to embedded devices.
 
@@ -20,7 +20,7 @@ separated modules:
     signaling information about the received or needed chunks;
    \item \textit{Scheduling} functions, which can be used to decide
      which chunk to send/ask, to which peer;
-   \item \textit{Network Helper}, used by the other modules and the
+   \item \textit{Network Helper}, used by the other modules and
      applications to delegate network related tasks;
    \item \textit{Peer Set} data type, to store information about the
      nodes connected to a specific peer in the overlay (the so called
@@ -38,71 +38,83 @@ be covered here: for further information refer to the
 The last three instead compose the fundamental blocks needed to build
 the \cloudcast \peersampling protocol. The \textit{Peer Sampling} module
 offers a simple implementation of \cyclon; the \textit{Peer Set}
-features common set manipulation functions and support for
-\textit{metadata}. In conclusion the \textit{Network Helper} greatly
-simplifies the use of the network and promise the support for
+provides functions focused on the manipulation of set of node
+\descriptors. In conclusion the \textit{Network Helper} greatly
+simplifies the use of the network and promises support for
 \textit{NAT traversal} techniques.
 
-In light of these facts, instead of re-implement all of the
-infrastructure from scratch, it was chosen to use \grapes as a
-starting point adding to it the missing components.
+In light of these facts, instead of re-implementing all of the
+infrastructure from scratch, it has been chosen to use \grapes as a
+starting point, adding to it the missing components.
 The rest of this chapter will cover in detail the work performed on
-grapes during the course of this thesis.
+the library during the course of this thesis. The notation rules
+adopted in the following sections are:
+\begin{itemize}
+  \item serif font for files and directories, i.e. \textsf{example\_file.c},
+    \textsf{./example\_directory/}
+  \item italics font with capitalized initials for module names,
+    i.e. \textit{Example Module)}
+ \item typewriter font for class names, i.e. \texttt{ExampleClass}
+  \item lowercase italics font followed by parenthesis for functions
+    i.e. \textit{example\_function()}
+  \item standard UML notation for diagrams
+\end{itemize}
 
 \section{Groundwork}
-The first issue which was identified during the initial analysis of
-the toolkit was that some component (prominently the \textit{Peer
+The first issue identified during the initial analysis of
+the toolkit has been that some components (prominently the \textit{Peer
   Sampling}) were designed to support only one instance per
 executable: global variables were used to maintain protocols states and
-to act as buffers. Furthermore the \api did not exposed any mechanism
+to act as buffers. Furthermore the \api did not expose any mechanism
 to select a specific instance to act on.
 
-Such a design choice don't play well with the final aim of this work: it
+Such a design choice does not play well with the final aim of this work: it
 would limit an application built upon it to take part in only a single
 \peersampling instance. The problem was solved by \grapes authors by
 having multi-process applications, where each single process is
 responsible for a specific instance and communicates with other
-via \emph{IPC} mechanism. Whereas this approach is both effective and
-efficient when considering program written in a compiled language
-such as C or C++, things rapidly changes when we shift attention to
+via \emph{IPC} mechanisms. Whereas this approach is both effective and
+efficient when considering programs written in a compiled language
+such as C or C++, things rapidly change when we shift attention to
 languages requiring a \emph{virtual machine}: the aggregated memory
 footprint of the application as a whole is dominated by the memory
 required by the multiple \emph{VMs}. In these situations a better
 approach is to keep all the application logic in a single executable
-and possibly using \textit{threads} to ease the programming task.
+and possibly using \emph{threads} to ease the programming task.
 
-Keeping this in mind, the first effort taken was to modify the
+Keeping this in mind, the first effort has been to modify the
 \emph{Peer Sampling} module to support concurrent instances. The
 functions forming the high level \grapes's \api are explicitly written
-to be re-entrant and should be consider thread safe, hence the only
-real modification needed was the addition of execution contexts to
-separate parallel instances. The task was accomplished in an
-\emph{Object Oriented} inspired way: the state of each protocol was
+to be \emph{re-entrant} and should be consider thread safe, hence the only
+real needed modification has been the addition of execution contexts to
+separate parallel instances. The task has been accomplished in an
+\emph{Object Oriented} inspired way: the state of each protocol is
 collapsed in a C \emph{struct} which is passed as the first
-argument of each \emph{Peer Sampling} \api's function thus identifying
+argument of each \textit{Peer Sampling} \api's function thus identifying
 the \emph{object} to act upon.
 
 \ \\
-Another side task which required a fairly large amount of time was the
-debugging of the \emph{Peer Set}'s manipulation functions. The
-first tests performed on a partial implementation of the modified
-\cyclon shown odd result which greatly deviate from the simulated
-behavior. After a thorough analysis a bug was found in the function
+Another side task which has required a fairly large amount of time, has
+been the debugging of the \textit{Peer Set}'s manipulation functions. The
+first tests that have been performed on a partial implementation of
+the modified
+\cyclon, have shown odd results which greatly deviate from the simulated
+behavior. After a thorough analysis, a bug has been found in the function
 responsible for the insertion of node \descriptors in the \view.
-Furthermore the \emph{Peer Set} \api was augmented with a number of
-supplementary functions to manage the \textit{filling} and
-\textit{sampling} of sets.
+Furthermore the \textit{Peer Set} \api has been augmented with a number of
+supplementary functions to manage the \emph{filling} and
+\emph{sampling} of sets.
 
 \section{Cloud Helper}
 At this point the only feature \grapes missed in order to implement
 \cloudcast \peersampling protocol was the support for the storage
-service. A simple solution to the problem would have been to simply
+service. A simple solution to the problem would have been to
 relay on an external library and explicitly make use of it. Whereas
 being quick and easy this strategy does not comply with the
 portability requirement of the project and at the same time would have
 limited the \cloud support to a single provider.
 
-This is the rationale that lead to the introduction of the
+This is the rationale that leads to the introduction of the
 \cloudhelper abstraction layer. This module, in line with the rest of
 \grapes components, exports a simple \api (shown in
 \ref{fig:grapes-cloudhelper}) which can be used by other
@@ -115,54 +127,57 @@ modules or by the final application.
   \label{fig:grapes-cloudhelper}
 \end{figure}
 
-As can be see the functionalities offered by the \api cover only the
-basic \cloud operation and the support for metadata is limited to the
+As can be seen the functionalities offered by the \api cover only the
+basic storage \cloud operation and the support for metadata is limited to the
 last modification time: indeed at the current state only those
-functions needed for the \cloudcast implementation where
+functions needed for the \cloudcast implementation have been
 added.
-Given that the purpose of the functions and their use is for the most
-part self explanatory, in the following paragraphs it will be given
+Given that the purpose of the functions and their usage is for the most
+part self explanatory, in the following paragraphs it is given
 only a quick overview of them.
-\emph{GetFomCloud} and \emph{getFromCloudDefault} are used to
-query the \cloud for a specific \textit{key}. Both of them support the
-addition of custom header to the reply to ease the processing
-phase. In addition \emph{getFromCloudDefault} allows the caller to
-set a default reply to be used in the event that the specified
-\textit{key} is not present on the \cloud. Symmetrically
-\emph{putOnCloud} takes care of updating the value of a specific
-\textit{key}. These function all use plain bytes to represent
-data (in the form of array of \textit{uint8\_t}) and their return
-value indicates the state of the operation: $0$ is used to signal a
+The routines \emph{get\_from\_coud()} and
+\emph{get\_from\_cloud\_default()} are used to
+query the \cloud for a specific \emph{key}. Both of them support the
+addition of custom header to the reply, to ease the processing
+phase. In addition \emph{get\_from\_cloud\_default()} allows the caller to
+set a default value, to be used in the event that the specified
+\emph{key} is not present on the \cloud. Symmetrically
+\emph{put\_on\_cloud()} takes care of updating the value of a specific
+\emph{key}. These functions all use plain bytes to represent
+data (in the form of array of \emph{uint8\_t}) and their return
+value indicates the state of the operation: $0$ is used to signal
 success while $1$ means that an error occurred while performing the
-action. The \emph{timestampCloud} function is used to obtain the time
+action. The \emph{timestamp\_cloud()} function is used to obtain the time
 of the last modification associated to the most recent
-\textit{completed} query. A query is considered \textit{completed}
+\emph{completed} query. A query is considered \emph{completed}
 when the associated response is read. This is done via the
-\emph{recvFromCloud} function which stores the received data in the
-specified buffer and return the number of bytes read. Application can
-exploit the function \emph{wait4Cloud} to wait for the \cloud to
+\emph{recv\_from\_cloud()} function which stores the received data in the
+specified buffer and returns the number of bytes read. Applications can
+exploit the function \emph{wait4cloud()} to wait for the \cloud to
 perform a query: a return value of $1$ indicates that the
-operation was successful and the data can be read, $-1$ means that the
-specified \textit{key} could not be retrieved (most likely because it's
-unknown) and finally $0$ inform that some other error occurred.
+operation has been successful and the data can be read, $-1$ means that the
+specified \emph{key} could not be retrieved (most likely because it's
+unknown) and finally $0$ informs that some other error has occurred.
 
-The two functions \emph{getCloudNode} and \emph{isCloudNode} are used
+The two functions \emph{get\_cloud\_node()} and \emph{is\_cloud\_node()} are used
 to handle the interaction with the \textit{Peer Set} module: the
-former creates new peer \descriptor using the \textit{variant}
-parameter as the index of an imaginary \cloud \descriptor enumeration;
+former creates new peer \descriptors, using the \emph{variant}
+parameter to generate different instances (functionality made
+necessary by implementation details of the \textit{Peer Set} module);
 the latter instead is used to check if a specified \descriptor is
 indeed referring the \cloud.
 
 The remaining two functions are used to manage the \textit{execution
-  context} of the \cloudhelper. \emph{GetCloudHelperFor} retrieve the
-\textit{context} associated to a particular peer \descriptor: this
+  context} of the \cloudhelper. \textit{get\_cloud\_helper\_for()} retrieves the
+\emph{context} associated to a particular peer \descriptor: this
 functionality is used by the \cloudcast \peersampling protocol to
 fetch a configured \cloudhelper instance without requiring
 modification to the current \grapes \textit{Peer Sampling} module
-\api. \emph{CloudHelperInit} is the function responsible for the
+\api. Finally, \textit{cloud\_helper\_init()} is the function
+responsible for the
 creation and configuration of new \cloudhelper \textit{execution
   contexts}. Adhering to the convention in use by \grapes, this function
-exploit an \textit{opaque} configuration string containing an
+exploits an \textit{opaque} configuration string containing a
 human readable representation of the parameters.
 
 At the current stage the only parameter directly supported by the
@@ -172,28 +187,28 @@ newly created \textit{context}. Such implementation will be
 responsible for parsing the remaining portion of the configuration
 string.
 
-During the course of this work two \cloudhelper implementation were
+During the course of this work two \cloudhelper implementations have been
 developed. The first is backed by \textit{Amazon Simple Storage
-  Service} \cloud and it's based upon \textit{libS3}~\cite{LibS3}. The
+  Service}  and it's based upon the \textit{libS3}~\cite{LibS3} library. The
 second one uses a \textit{MySQL} database as storage and it
-make use of \textit{MySQL Connector/C}~\cite{MySQLConnectorC}. Both
-these libraries takes with them a number of dependencies and provide
+makes use of \textit{MySQL Connector/C}~\cite{MySQLConnectorC}. Both
+these libraries take with them a number of dependencies and provide
 synchronous operations (in contrast to the asynchronous paradigm used
 by \grapes). Given the stringent restriction on dependencies and
-\textit{threads} usage by the original project it was chosen not to
-include the these \cloudhelper implementation directly in the code
-base, instead they are available through \textit{shared libraries}.
+\textit{threads} usage by the original project it has been chosen not to
+include these \cloudhelper implementations directly in the code
+base; instead they are available through \textit{shared libraries}.
 
 To make this possible a \textit{fake} \cloudhelper called ``delegate''
-was develop to act as a bridge between \grapes and the \textit{shared
+has been developed to act as a bridge between \grapes and the \textit{shared
   libraries} implementing the actual \cloud storage access. The
 library name is obtained by parsing the configuration string for the parameter
 ``delegate\_lib''.
 
-Figure~\ref{fig:grapes-cloudhelper-lifecycle} summarize in a schematic
-fashion this process while Table~\ref{tbl:grapes-cloudhelper-libs3}
-and~\ref{tbl:grapes-cloudhelper-mysql} provide a list of the provider
-specific parameter they support.
+Figure~\ref{fig:grapes-cloudhelper-lifecycle} summarizes in a schematic
+fashion this process while Table~\ref{tbl:grapes-cloudhelper-mysql}
+and~\ref{tbl:grapes-cloudhelper-libs3} provide a list of the provider
+specific parameters supported by the two implementations.
 
 \begin{figure}[H]
   \centering
@@ -240,20 +255,20 @@ specific parameter they support.
 
 \section{\cloudcast \peersampling protocol}
 The \cloudcast \peersampling protocol implementation is fully
-integrated in the \grapes \textit{Peer Sampling} \api and doesn't
+integrated in the \grapes \textit{Peer Sampling} \api and does not
 require any specific action to be taken by the final application in
 order to work. The source code follows the algorithm showed in
-section~\ref{sec:cloudcast-additions} and thus will not be reported
-here as it does not give any substantial contribute. Instead this
-section will give some insight on the configuration and usage of the
+section~\ref{sec:cloudcast-additions} and thus is not reported
+here as it does not add any substantial contribute. Instead this
+section provides some insights on the configuration and usage of the
 protocol.
 
 Table \ref{tbl:grapes-cloudcast-parameters} reports the supported
-configuration parameters along with their meaning and their default
-value. As can be seen none of them is required to obtain a fully
+configuration parameters along with their meaning and default
+values. As can be seen, none of them is required to obtain a fully
 functional instance, however by default the recovery mechanism
 discussed in section~\ref{sec:cloudcast-additions} is not enabled
-and this may cause some problem as it will be shown later on.
+and this may causes some problems as it is described later on.
 
 \begin{table}[H]
   \hspace{-20pt}
@@ -284,27 +299,26 @@ Figure \ref{lst:grapes-example-app} shows a minimal application which
 successfully takes part in a \cloudcast \peersampling protocol
 instance. The differences with respect to a standard \grapes
 application which exploits the \emph{Peer Sampling} module are limited
-but substantial. First and most notably the \cloudhelper must be
-loaded and configured, this is done in line 2 and 13-15 by including
-the \textit{cloud\_helper.h} header file and by creating a new
+but substantial. First, and most notably, the \cloudhelper must be
+loaded and configured. This is done in line 2 and 13-15 by including
+the \textsf{cloud\_helper.h} header file and by creating a new
 \textit{context}. In the example the actual \cloud support is offered
-by the fictional \textit{my\_helper.so} library.
+by the fictional \textsf{my\_helper.so} library.
 The next noteworthy operation can be seen in line 16: here the actual
 \peersampling protocol is loaded by specifying the value
 \textit{cloudcast} for the \textit{protocol} parameter. A custom value
-for the \textit{cache\_size} parameter is specified to give a better
+is used for the \textit{cache\_size} parameter in order to give a better
 understanding of the configuration mechanism.
 
-The only remaining difference with respect to a standard application
-regards the handling of incoming
-data. Indeed given that \grapes design delegate the receiving of data
+The only remaining difference regards the handling of incoming
+data. Indeed, given that \grapes design delegates the receiving of data
 to the application, this is now responsible to read incoming messages
-from both the peers and the \cloud. To help with this task, two
-commodity function were developed and are exposed via the
-\textit{cloud\_helper\_utils.h} header file: \textit{wait4any\_thread} and
-\textit{wait4any\_polling}. The former concurrently invokes the wait
-functions of the \textit{Network Helper} and \cloudhelper modules,
-while the second uses a polling scheme to avoid the added dependencies
+from the \cloud too. To help with this task, two
+commodity functions have been developed and are exposed via the
+\textsf{cloud\_helper\_utils.h} header file: \textit{wait4any\_thread()} and
+\textit{wait4any\_polling()}. The former concurrently invokes the wait
+functions of the \textit{Network Helper} and the \cloudhelper modules,
+while the second employs a polling scheme to avoid the added dependencies
 that the \textit{thread} abstraction layer takes with itself. The
 first variant of this functionality can be seen in action in line 25.
 
@@ -316,52 +330,52 @@ distributed alongside the source code.
 
 \begin{figure}[H]
   \centering
-  \lstinputlisting[language=C,basicstyle=\footnotesize,numberstyle=\footnotesize,numbers=left,frame=single]{code/grapes-example.c}
+  \lstinputlisting[language=C,basicstyle=\footnotesize,numberstyle=\footnotesize,numbers=left,frame=leftline]{code/grapes-example.c}
   \caption{Skeleton of a simple application using the \cloudcast
     \peersampling protocol.}
   \label{lst:grapes-example-app}
 \end{figure}
 
 \section{Building and deployment}
-The modification to the toolkit were developed with the
+The modifications to the toolkit have been developed with the
 support of \grapes's authors and are in the process of being merged
 into the main codebase. The actual code developed during the course of
 this work is available via \github~\cite{GRAPES-repo}: the tag
-\thesistag point to the \emph{HEAD} revision at the moment of this
+\thesistag point to the last revision at the moment of this
 writing.
 
 The building process is unaltered and follows the conventions
-established by \grapes: to generate the main library just type ``\make''. This
+established by \grapes: to generate the main library just type ``make''. This
 will result in the creation of a \emph{static} library named
-``\textit{libgrapes.a}'' containing all of the functionality apart
-from the \cloudhelper delegate implementations. These must be compiled
-separately by entering in the \texttt{src/CloudSupport/} directory and
-typing ``\make delegate\_helpers``. Such command will generates a
+\textsf{libgrapes.a} containing all of the functionality apart
+for the \cloudhelper delegate implementations. These must be compiled
+separately by entering in the \textsf{src/CloudSupport/} directory and
+typing ``make delegate\_helpers``. Such command will build a
 separate \textit{shared} library for each available delegate
-helper. The \texttt{PLATFORM} variable can be used to select the
+helper. The \textit{PLATFORM} variable can be used to select the
 desired library format: at the current state supported values are
 \textit{unix} and \textit{darwin}.
-Note that before being able to build the delegate helpers, the
+Note that before being able to compile the delegate helpers, the
 \emph{libs3} and \emph{MySQL Connector/C} libraries must be
 installed and configured.
 
 \section{Java bindings}
-As was mentioned in the introduction, the final goal of this work is
+As has been mentioned in the introduction, the final goal of this work is
 the creation of a general framework written in \emph{Java}. This poses
-the problem of how exploit the modified \grapes toolkit from a
+the problem of how to exploit the modified \grapes toolkit from a
 \emph{Java} application. In order to solve such problem a simple
-library was developed to provide the bindings needed bindings. This
-library is called \jgrapes.
+library called \jgrapes has been developed to provide the needed
+bindings.
 
 It's designed in such a way to offer a one-to-one mapping with respect
 to the \grapes's modules: the available classes are
 \texttt{NetworkHelper}, \texttt{CloudHelper} and
 \texttt{PeerSampler}. Each one of these exposes methods mapping the
 \api of the respective \grapes module. The only design difference is
-represented by the \texttt{JGrapes} class which function as a
+represented by the \texttt{JGrapes} class which functions as a
 \textit{single point of entry}: it takes care of loading the native
-library and perform the required initialization action, furthermore it
-provides simple function to allocate new instances of the main
+library and performing the required initialization action, furthermore it
+provides simple functions to allocate new instances of the main
 components.
 
 The usage of the library should be evident to anyone who is already
@@ -369,46 +383,46 @@ familiar with \grapes, in any case the package \emph{test} contains
 a simple working application which shows the common usage.
 
 Again the library is available via \github~\cite{jGRAPES-repo}, with
-the \emph{HEAD} revision at the time of this writing tagged with
+the last revision at the time of this writing tagged with
 \thesistag.
 
-The building process if fully automated and make usage of \emph{ant}
+The building process is fully automated and make usage of \emph{ant}
 for the \emph{Java} portion and \make for the native components. The
 first step is to update the \grapes distribution which will be used by
 the library.
-This is done by typing the command: \\
-``\texttt{ant update-grapes
-  -DGRAPES\_DIR=/path/to/grapes/distribution}''.
+This is done by typing the command: ``ant update-grapes
+-DGRAPES\_DIR=/path/to/grapes/distribution''.
 
 As a result both the
 main \grapes library and the \cloudhelper delegate libraries will be
 compiled and prepared to be used with \jgrapes. The same consideration
 on the availability of the library dependencies made for
-\grapes applies here so, in case of error during this phase, check
-your environment.
+\grapes, applies here too. In case of errors during this phase the
+first reaction should be to check that the environment is properly
+configured.
 
 The second step is the compilation of the \emph{Java} library
-itself. This is done by invoking the target \texttt{dist} of the
+itself. This is done by invoking the target \textit{dist} of the
 \emph{ant} build file. During this second phase a series of things
 happen: the final \emph{shared} library is created, the \textit{Java}
 toolkit is compiled and packaged and in conclusion all the file
-required to use the functionalities are placed in the \texttt{dist}
+required to use the functionalities are placed in the \textsf{dist/}
 directory.
-Since \jgrapes makes extensive use of \emph{JNI}~\cite{JNIGuide}, for this
-phase to complete successfully, the location of \emph{JNI}'s header
+Since \jgrapes makes extensive use of \emph{JNI}~\cite{JNIGuide} to
+complete successfully this phase, the location of \emph{JNI}'s header
 files must be configured in the environment.
 
 \section{Evaluation}
 In conclusion of this chapter we would like to shows some tangible
-result which shows how the real implementation perform compared with
-the simulated one.
-The experiments were performed via a \emph{Java} application
+result which demonstrate how the real implementation performs in
+comparison with the simulated one.
+The experiments have been performed via a \emph{Java} application
 (available in the repository of \jgrapes) using the same configuration
-parameter adopted by the corresponding simulations. When possible the
-exact same setting used in the simulation was replicated, but some
-specific experiment were impossible to fully reproduce due to limited
-time (each simulated day requires one real day) and computational
-resources.
+parameter adopted by the corresponding simulations. When possible
+exactly the same settings have been employed,
+but some specific experiments have been impossible to fully reproduce due to
+the limited amount of time (each simulated day requires one real day)
+and computational resources.
 
 \begin{figure}[h!]
   \centering
@@ -428,22 +442,22 @@ resources.
 
 The first result, shown in figure~\ref{fig:cloudcast-dynamic-original}
 and matching figure~\ref{fig:cloudcast-sim-oscillating-indegree},
-exhibit the behavior of the system when using the original protocol
+exhibits the behavior of the system when using the original protocol
 without the recovery mechanism. As can be seen the protocol works as
 expected for the first $3$ days, maintaining the desired \cloud
-in-degree and contact rate, but as soon as the network start its
+in-degree and contact rate, but as soon as the network starts its
 descending phase on day $4$, all the \cloud entries are lost and the
-cloud is for all intent and purposes cut off the system. During the
-analysis of \cloudcast it was already discussed how such a scenario
+\cloud is for all intent and purposes cut off the system. During the
+analysis of \cloudcast it has been already discussed how such a scenario
 may happens, in this case however another factor plays an important
 role. The way the \emph{Peer Set} module is currently implemented in
 \grapes and the strategy used to maintain multiple \cloud entries by
 the modified \cyclon make so that two \cloud \descriptor may be
-collapsed into a single one during \view exchange. Such problem
+collapsed into a single one during \view\ exchange. Such problem
 requires a fairly extensive modification of the way \grapes handles
-\descriptors to be fixed, so it wasn't feasible to fix it right
-away. Anyway on its own the bug does not influences the behavior of
-the protocol as it's demonstrated by the first $3$ days of execution
+\descriptors to be fixed, so it hasn't been feasible to correct it right
+away. At any rate, on its own the bug does not influence the behavior of
+the protocol as it is demonstrated by the first $3$ days of execution
 and by extensive tests performed on fixed size networks.
 
 \begin{figure}[h!]
@@ -464,7 +478,7 @@ and by extensive tests performed on fixed size networks.
 
 Figure~\ref{fig:cloudcast-dynamic-additions} shows the same experiment
 performed using the modified \cloudcast protocol. The additional
-parameter used to perform these tests are:
+parameters used to perform these tests are:
 \begin{itemize}
   \item $max\_silence$: 30 cycles
   \item $cloud\_respawn\_prob$: 0.2
@@ -475,7 +489,7 @@ plot~\ref{fig:cloudcast-dynamic-indegree-additions} is the presence of
 high peak of \cloud \descriptors. This is the effect of the recovery
 mechanism in action. As can be seen the peaks are reabsorbed quickly
 and as shows plot~\ref{fig:cloudcast-dynamic-load-additions} the
-impact on the \cloud contact rate is fairly limited and shouldn't
+impact on the \cloud contact rate is fairly limited and should not
 impact much on the aggregated daily contacts.
 
 \begin{figure}[h!]
@@ -489,33 +503,33 @@ impact much on the aggregated daily contacts.
     \includegraphics[width=240pt]{cloudcast-dynamic-indegree-4gg-detail-recovery.pdf}
     \label{fig:cloudcast-dynamic-indegree-additions-detail-recovery}
   }
-  \caption{Zoomed in plots comparing the effects of the recovery
+  \caption{Zoomed-in plots comparing the effects of the recovery
     mechanism on the \cloud in-degree}
   \label{fig:cloudcast-dynamic-indegree-additions-detail}
 \end{figure}
 
 
 Figure~\ref{fig:cloudcast-dynamic-indegree-additions-detail} shows a
-comparison between ``clean'' day of execution and another in which the
-recovery mechanism fired multiple times. First of all it easy to see
-how the overall performance is similar in both plot: the average
-number of \cloud \descriptors tend to approximate the desired value in
-both plot.
+comparison between a ``clean'' day of execution and another one in which the
+recovery mechanism fired multiple times. First of all it's easy to see
+how the overall performance is similar in both plots: the average
+number of \cloud \descriptors tends, in both cases, to approximate the
+desired value.
 More interesting is the behavior exhibited by the recovery mechanism:
 around the $60^{th}$ hour of execution it is fired 2 times in a close
-succession. Such a chain of events don't happen often, but it shows
+succession. Such a chain of events does not happen often, but it shows
 how the recovery mechanism and the \cloud rate adaptive scheme works
-on the two opposite fronts: the former notice that too much time is
+on the two opposite fronts: the former notice that too much time has
 passed since the last global \cloud contact and respond by creating a
 number of \cloud \descriptors randomly distributed in the network. The
-latter react to the suddenly increase in contact by removing
+latter reacts to the suddenly increase in contact by removing
 them.
-This two competing force alongside the usual descending phase of the
-network and an unlucky succession of \view exchanges have the effect
+This two competing force, alongside the usual descending phase of the
+network and an unlucky succession of \view\ exchanges, have the effect
 of once more removing all the \cloud entries in the network.
 
 Considering as the starting instant the moment in which the number of
-\cloud \descriptors goes to $0$ for the fist time and as ending
+\cloud \descriptors goes to $0$ for the first time and as ending
 instant the time in which the network stabilizes itself after the
 second activation of the recovery mechanism, the total time taken by
 this stalling phase is around one hour. In the meantime the protocol
@@ -539,15 +553,15 @@ rate is not respected.
 
 Figure~\ref{fig:cloudcast-dynamic-load-additions-detail} shows the
 same two days from the point of view of the \cloud contact rate. In
-these plot is more evident how limited is the influence of the
-recovery mechanism: the peak are relatively small and they lasts for
+these plots is more evident how limited is the influence of the
+recovery mechanism: the peaks are relatively small and they last for a
 limited amount of time.
 
-The parameter used to configure the recovery mechanism was not
-subjected to evaluation, they were selected so to be somewhat
-realistic but without any deep consideration on the impact. Thus
+The parameter used to configure the recovery mechanism has not been
+subjected to evaluation; they have been selected so to be somewhat
+realistic but without any deep consideration on their impact. Thus
 by selecting them more carefully or even better by employing some
-adaptive strategy the overall impact should sensibly decrease.
+adaptive strategy the imposed overhead should sensibly decrease.
 
 \begin{figure}[h!]
   \centering
@@ -564,24 +578,24 @@ adaptive strategy the overall impact should sensibly decrease.
   \label{fig:cloudcast-loads-global}
 \end{figure}
 
-Figure~\ref{fig:cloudcast-loads-global} conclude the evaluation of the
-implementations. The plot~\ref{fig:cloudcast-loads} show the \cloud
-load obtained by the \grapes implementation for different network
-size and match the plot in figure~\ref{fig:cloudcast-sim-loads} which
-is repeated in plot~\ref{fig:cloudcast-sim-loads-re} for convenience.
+Figure~\ref{fig:cloudcast-loads-global} concludes the evaluation of the
+work performed on \grapes. The plot~\ref{fig:cloudcast-loads} shows the \cloud
+load obtained by the implementation for different network
+sizes and match the plot in figure~\ref{fig:cloudcast-sim-loads} which
+is repeated here for convenience.
 
-Due to difference in the experiment setup and in the way data was
+Due to differences in the experiment setup and in the way data has been
 collected the values in the two plots are not directly comparable,
-however is evident how they are proportional. In both the \cloud
+however is evident how they are proportional. In both cases the \cloud
 contact rate is high for small networks and it tend to decrease as
 more nodes are added.
 
 The odd result obtained by the real implementation for a network size
-of $1024 = 2^{10}$ is also the reason why we didn't provide samples for
-denser network. The test were performed on a small number of shared
-server. To simulate $1024$ nodes $4$ real machine were employed each
+of $1024 = 2^{10}$ is also the reason why samples for
+denser network are not provided. The tests have been performed on a
+small number of shared servers. To simulate $1024$ nodes $4$ real
+machine have been employed, each
 taking care of $256$ peers in the form of an equal number of
 \emph{Java} threads. The excessive computational load posed on each
 machine caused delays, missed messages and in the end resulted in the
-bad performances of the protocol. Simulation with a higher number of
-nodes weren't even able to run until completion.
+bad performances of the protocol.
