@@ -48,7 +48,7 @@
     }
   }
 
-  \caption{Additions to \cloudcast\ \peersampling\ active thread}
+  \caption{Additions to \cloudcast peer sampling active thread}
   \label{algo:cloudcast_addition_active}
 \end{algorithm}
 
@@ -78,12 +78,12 @@
   \BlankLine
   \On{\Receive $\langle$ \VIEW, $v$, $t$ $\rangle$}{
     \nlset{(a8)}\label{blocka8}
-    \Comment{Record successfull conclusion of \cloud\ active }
+    \Comment{Record successfull conclusion of cloud active }
     $bakC \leftarrow$ \NONE\;
 
     \BlankLine
     \Comment{Perform blocks 11-15}
   }
-  \caption{Additions to \cloudcast\ \peersampling\ passive thread}
+  \caption{Additions to \cloudcast\ peer sampling passive thread}
   \label{algo:cloudcast_addition_passive}
 \end{algorithm}

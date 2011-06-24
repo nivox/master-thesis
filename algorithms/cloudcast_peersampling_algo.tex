@@ -32,7 +32,7 @@
     \If {$q \equiv C$}{
       \BlankLine
       \nlset{(4)}\label{block4}
-      \Comment{If $q$ represewnt the \cloud, send request for it's view}
+      \Comment{If $q$ represent the cloud, send request for it's view}
       \Send $\langle$ \GET, ``view'' $\rangle$ \TO $C$\;
     }
     \Else{
@@ -53,7 +53,7 @@
       \Send $\langle$ \REQUEST, $p$, \request $\rangle$ \TO $q$\;
     }
   }
-  \caption{\cloudcast\ \peersampling\ active thread}
+  \caption{\cloudcast peer sampling active thread}
   \label{algo:cloudcast_original_active}
 \end{algorithm}
 
@@ -95,7 +95,7 @@
       }
     }
   }
-  \caption{\cloudcast\ \peersampling\ passive thread (peers)}
+  \caption{\cloudcast peer sampling passive thread (peers)}
   \label{algo:cloudcast_original_passive_peers}
 \end{algorithm}
 
@@ -152,6 +152,6 @@
     \Comment{Write the new view in the cloud}
     \Send $\langle$ \PUT, ``view'' $v \rangle$ \TO $C$\;
   }
-  \caption{\cloudcast\ \peersampling\ passive thread (cloud)}
+  \caption{\cloudcast peer sampling passive thread (cloud)}
   \label{algo:cloudcast_original_passive_cloud}
 \end{algorithm}

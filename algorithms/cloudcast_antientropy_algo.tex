@@ -15,7 +15,7 @@
       \BlankLine
       \If{$q \equiv C$}{
         \nlset{(ae1)}\label{ae-block2}
-        \Comment{Resolve differences with the \cloud}\;
+        \Comment{Resolve differences with the cloud}\;
         \Send $\langle$ \GETALL\ $\rangle$ \TO $C$\;
         \Receive $\langle cloud\_data \rangle$ \FROM $C$\;
         $data \leftarrow$ resolve\_differences($data$, $cloud\_data$)\;
@@ -47,6 +47,6 @@
       \Send  $\langle$ \REPLY, $data \rangle$ \TO $q$\;
     }
   }
-  \caption{\cloudcast\ \antientropy\ \epidemic\ broadcast}
+  \caption{\cloudcast anti entropy epidemic broadcast}
   \label{algo:cloudcast_antietropy}
 \end{algorithm}

@@ -8,7 +8,7 @@ possible, concentrating their effort in planning the logic of the
 application instead of the underlying \ptop infrastructure.
 
 This convenience however must not come at the price of
-flexibility: often times the design of a \ptop application requires
+flexibility: the design of a \ptop application often requires
 tweaking at the lower level of the infrastructure; in these situations
 a static and monolithic framework may represent an obstacle instead of
 an help.
@@ -26,7 +26,7 @@ reflect what happens when the same protocol is implanted in a real
 scenario.
 The \cloudypeer architecture has been explicitly designed to allow the change
 of every single component by simply modifying a configuration
-parameter thus allowing experimenting with different
+parameter, thus allowing experimenting with different
 combinations without the need to touch a single line of code.
 
 The implementation is based on the \emph{Java} programming language
@@ -38,17 +38,17 @@ the existence of many commercial and open-source projects written in
 \emph{Java} and concerning \ptop systems represent a valuable resource
 in term of code reuse.
 \ \\
-In the following sections will be analyzed the architecture of
+The following sections introduce the architecture of
 \cloudypeer by describing it is major components and their interactions.
-Furthermore will be described the various module's
-built-in implementations and the means offered to developers to extend
+Furthermore, the various module's built-in implementations are described
+and the means offered to developers to extend
 the framework itself.
 In conclusion a ``toy'' application will be shown with the intent of
 demonstrating the simplicity and the convenience offered by
 \cloudypeer.
 
-As for the previous chapter the notation rules adopted in the
-following portion of the chapter are:
+Similarly to the previous chapter, the notation rules adopted in the
+following are:
 \begin{itemize}
   \item serif font for files and directories, i.e. \textsf{ExampleFile.java},
     \textsf{./example\_directory/}
@@ -61,7 +61,7 @@ following portion of the chapter are:
 \end{itemize}
 
 \section{Architecture}
-Figure \ref{fig:cloudypeer-architecture} shows an overview of the
+Figure~\ref{fig:cloudypeer-architecture} shows an overview of the
 architecture of \cloudypeer illustrating the principal components and
 the way they are related one another.
 
@@ -72,24 +72,24 @@ the way they are related one another.
   \label{fig:cloudypeer-architecture}
 \end{figure}
 
-As can be seen, the \peersampling protocols hold a central role in the
+As can be seen, the peer sampling protocols hold a central role in the
 infrastructure and are divided in two categories: the first represents
 classic protocols such as \cyclon; the second extends the former and
-embodies the \peersampling protocol of \cloudcast.
+embodies the peer sampling protocol of \cloudcast.
 
-Samples of the network's partial \view\ are offered to higher level
+Samples of the network's partial view are offered to higher level
 protocols via a \peerselector. This is a local module which does not
 directly interact with the \ptop network but it just implements the logic
 used by the application to select peers. This abstraction gives the
 opportunity to application's developers to implement complex selection
-strategies, possibly involving multiple \peersampling instances of
+strategies, possibly involving multiple peer sampling instances of
 different kind. A simple implementation performing a random
 selection with customizable filters is provided within the framework
 and should be sufficient for most of the simpler scenarios.
 
 The \peerselector itself is used by all the algorithms which are
 based on the interaction between pairs of peers. At the current stage
-the only components of such kind are the two variants of \epidemic
+the only components of such kind are the two variants of epidemic
 broadcast, but more can be easily added.
 
 The function executed by these two protocols necessarily requires
@@ -97,27 +97,27 @@ access to the application data. However such a direct dependency
 does not fit with
 the generality requirement of the framework. For this reason the
 \store abstraction layer has been added: this component provides a general
-\api for accessing and managing the application's data exploitable by
+API for accessing and managing the application's data exploitable by
 other modules.
 Application designers must create their own \store implementation
 reflecting their storage model. To simplify this task the framework
 provides a built-in implementation which takes care of most of the
-operation needed to fulfill the \api specifications.
+operation needed to fulfill the API specifications.
 
 The modules which conclude this architecture overview are the
 \cloudhelper and \networkhelper: similarly as what has been discussed for
 \grapes, these two elements provide an abstraction layer which hides
 the details of the actual implementations making it possible
-to easily switch \cloud provider or networking technique.
+to easily switch cloud provider or networking technique.
 
 \ \\
 The following sections will cover the details of the aforementioned
-modules by providing a more in depth description of the \api they
+modules by providing a more in depth description of the API they
 offer and by giving some insight on the way to extend them.
 
 \section{Basic components}
-Before starting the description about the specific modules, let's look
-at figure~\ref{fig:cloudypeer-basic-relations} where are shown the
+Before starting the description about the specific modules, let us look
+at Figure~\ref{fig:cloudypeer-basic-relations} where are shown the
 basic components which are used by the rest of the \cloudypeer
 infrastructure.
 
@@ -130,7 +130,7 @@ infrastructure.
 
 Most of the classes role should be already clear at this point:
 \texttt{Node} and its two implementation are used to model
-node \descriptors and provide basic addressing information while
+node descriptors and provide basic addressing information while
 \texttt{PeerSelector} defines a standard way to express
 peer selection strategies, of which \texttt{RandomPeerSelector} is a
 simple example.
@@ -144,23 +144,23 @@ values, and handles the instantiation of the correct
 implementation via name mappings. Since its presence results completely
 transparent to users of \cloudypeer, it is not proposed a detailed
 description. Developers interested in extending the
-framework with new protocols may refer to the \javadoc of the project
+framework with new protocols may refer to the \emph{JavaDoc} of the project
 for further information on how to exploit the dynamic loading procedures.
 
 \begin{figure}[h!]
   \centering
   \includegraphics[width=\textwidth]{cloudypeer-basic-gossipprotocol-classdiagram.pdf}
-  \caption{\texttt{GossipProtocol} public \api}
+  \caption{\texttt{GossipProtocol} public API}
   \label{fig:cloudypeer-gossipprotocol-class}
 \end{figure}
 
 The last class composing the basic infrastructure is
 \texttt{GossipProtocol}. A diagram describing this abstract class is
-provided in figure~\ref{fig:cloudypeer-gossipprotocol-class}. This
-component defines the skeleton of a \gossip protocol: it provides
+provided in Figure~\ref{fig:cloudypeer-gossipprotocol-class}. This
+component defines the skeleton of a gossip protocol: it provides
 standard means to start and stop the execution, configures the common
 properties and furthermore it offers support for opaque parameters
-and resources. Such features represent the public \api and
+and resources. Such features represent the public API and
 only reflect part of the offered functionalities: indeed
 \texttt{GossipProtocol} implements many other common procedure aimed at
 simplifying the thread management and the overall life-cycle of the
@@ -177,12 +177,12 @@ additional features.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=\textwidth]{cloudypeer-networkhelper-classdiagram.pdf}
-  \caption{\texttt{NetworkHelper} public \api}
+  \caption{\texttt{NetworkHelper} public API}
   \label{fig:cloudypeer-nethelper-class}
 \end{figure}
 
-As can be seen by looking at the public \api shown in
-figure~\ref{fig:cloudypeer-nethelper-class}, beyond datagram messages
+As can be seen by looking at the public API shown in
+Figure~\ref{fig:cloudypeer-nethelper-class}, beyond datagram messages
 \cloudypeer's \networkhelper offers support for connection oriented
 transport protocols. The rationale of this choice resides in the fact
 that some \ptop protocols require the exchange of a series of messages
@@ -211,7 +211,7 @@ is to ``configure'' it via the \textit{configureDefaultInstance()} or
 instance will be stored and can be the recovered calling the
 \textit{getConfiguredInstance()} method.
 
-Before a class is allowed to exploit a \networkhelper instance it must
+Before a class is allowed to exploit a \networkhelper instance, it must
 implement the \texttt{NetworkClient} interface and
 ``register'' itself by calling \textit{registerClient()}. The
 registration phase maps the actual client instance to a specified
@@ -231,22 +231,22 @@ constraints, is based upon \grapes's \networkhelper thus inheriting
 the \emph{NAT traversal} supports.
 
 \section{\cloudhelper}
-The support for the \cloud storage service is offered via the
+The support for the cloud storage service is offered via the
 \cloudhelper module. Figure~\ref{fig:cloudypeer-cloudhelper-relations}
 shows the components belonging to the module and their relations.
 The central entity is \texttt{StorageCloud} which
-implements the actual \cloud interaction logic. The offered \api, reported
-in figure~\ref{fig:cloudypeer-cloudhelper-class}, deals with the
+implements the actual cloud interaction logic. The offered API, reported
+in Figure~\ref{fig:cloudypeer-cloudhelper-class}, deals with the
 common operation supported by the various storage services. The
 methods themselves are self-explanatory and should not require further
 discussion.
 
 A side note is however deserved by \texttt{CloudURI}: this
 class provides a standard way to identify resources residing on the
-\cloud. As can be seen by the \texttt{StorageCloud} diagram, an
+cloud. As can be seen by the \texttt{StorageCloud} diagram, an
 instance of this class is required for the initialization phase to
 identify the \textit{bucket} on which operate. Given that different
-\cloud services may adopt profoundly different addressing schemes,
+cloud services may adopt profoundly different addressing schemes,
 each \cloudhelper provider employs its own version of
 \texttt{CloudURI} which applications obtain via the usual dynamic
 loading strategy.
@@ -261,24 +261,24 @@ loading strategy.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=\textwidth]{cloudypeer-cloudhelper-classdiagram.pdf}
-  \caption{\texttt{StorageCloud} public \api}
+  \caption{\texttt{StorageCloud} public API}
   \label{fig:cloudypeer-cloudhelper-class}
 \end{figure}
 
 \ \\
 The framework distribution ships two built-in \cloudhelper implementation
 respectively for \textit{Amazon Simple Storage Service} and a
-\textit{MySQL} backed \cloud service. The former is built upon
+\textit{MySQL} backed cloud service. The former is built upon
 the official \textit{Amazon AWS SDK for Java}~\cite{AWS4Java} and it is
 configured under the ``amazons3'' provider name, the latter
 exploits the \textit{MySQL Connector/J}~\cite{MySQLConnectorJava} and
 it is made available via the the ``mysql'' provider name.
 
-The \textit{MySQL} \cloud is compatible with the one supported by
+The \textit{MySQL} cloud is compatible with the one supported by
 \grapes hence allowing the use of the same instance for both the
-\peersampling and the actual storage. Table~\ref{tbl:mysql-cloud}
+peer sampling and the actual storage. Table~\ref{tbl:mysql-cloud}
 shows the base schema which a table must adhere to in order to being
-used as a \cloud.
+used as a cloud.
 
 \begin{table}[H]
   \centering
@@ -296,22 +296,21 @@ used as a \cloud.
   counter & INT UNSIGNED \\
   \hline
   \end{tabular}
-  \caption{Schema of a \cloud enabled \textit{MySQL} table}
+  \caption{Schema of a cloud enabled \textit{MySQL} table}
   \label{tbl:mysql-cloud}
 \end{table}
 
 \section{\textit{Store} module}
-This module represents a key component of the \cloudypeer architecture
+This module represents a key component of the \cloudypeer architecture,
 as it is responsible for all the storage-related tasks. As can be seen
-by the extensive \api, shown in figure
-\ref{fig:cloudypeer-store-class}, such operations range from simple
+by the extensive API, shown in Figure~\ref{fig:cloudypeer-store-class}, such operations range from simple
 listing and management duties to much more complex procedures aimed at
 efficiently resolving differences between instances.
 
 \begin{figure}[h!]
   \centering
   \includegraphics[width=\textwidth]{cloudypeer-store-classdiagram.pdf}
-  \caption{\texttt{Store} public \api}
+  \caption{\texttt{Store} public API}
   \label{fig:cloudypeer-store-class}
 \end{figure}
 
@@ -321,11 +320,11 @@ detail is that the version of \textit{listEntries()} without parameters
 has a peculiar behavior: the returned values may represent only a
 partial view of the entire entries: specifically the ``active''
 portion. The definition of ``active'' is application dependent and
-expresses some innate property of the domain. For instance in a news
-distribution scenario it may be based on time constraint as it is likely
+expresses some innate property of the domain. For instance, a news
+distribution scenario may be based on time constraint as it is likely
 that users are not interested in news which are too old.
 
-Shifting the focus to the more complex operations, let's look at the
+Shifting the focus to the more complex operations, let us look at the
 two variants of
 \textit{compareStoreEntries()}: these methods compare the \texttt{Store}
 state against an array of entries and compile a report which specifies
@@ -357,7 +356,7 @@ compute an hash value for each of them. Once a remote instance receives
 the list of hashes, it can compute its hashes and then
 compare the two results. An even better approach would be to use some
 \textit{rolling  checksum}~\cite{Rsync} scheme.
-The \api enables this line of action via the methods:
+The API enables this line of action via the methods:
 \textit{produceStoreEntriesDiffData()}, \textit{diffStoreEntries()} and
 \textit{patchStoreEntries()}.
 
@@ -374,14 +373,14 @@ driven notification of storage changes.
 
 \ \\
 As shown in the module overview proposed in
-figure~\ref{fig:cloudypeer-store-relations} the framework is
+Figure~\ref{fig:cloudypeer-store-relations} the framework is
 distributed with a built-in \texttt{Store} implementation providing
 most of the basic functionalities, delegating only the management of the
 actual persistence and \textit{diff} strategy. Developers can design their
 own persistence layer by subclassing
 \texttt{Simple\-Store\-Persistence\-Class} and developing \textit{write}, \textit{read} and
 \textit{list} procedures. Two default implementations of this class are
-made available: the first exploits the \cloudhelper to use a \cloud
+made available: the first exploits the \cloudhelper to use a cloud
 instance as storage, the second instead keeps all its entries in
 memory and is intended as a local storage implementation.
 
@@ -395,14 +394,14 @@ functionality, relaying however on the transmission of the complete data.
 
 \section{\emph{Peer sampling} protocols}
 All the components which are employed by \cloudypeer to provide
-support for \peersampling protocols are enclosed in a module called
+support for peer sampling protocols are enclosed in a module called
 \textit{Peer Sampling}. The diagram of the various classes and their
-relations is proposed in figure~\ref{fig:cloudypeer-peersampling-relations}.
+relations is proposed in Figure~\ref{fig:cloudypeer-peersampling-relations}.
 
 \begin{figure}[h!]
   \centering
   \includegraphics[width=\textwidth]{cloudypeer-peersampling-relations.pdf}
-  \caption{Relations between classes of the \peersampling module}
+  \caption{Relations between classes of the peer sampling module}
   \label{fig:cloudypeer-peersampling-relations}
 \end{figure}
 
@@ -413,14 +412,14 @@ conventional protocols can be added simply by subclassing
 \texttt{PeerSampler}. The task if further simplified by the fact that
 \grapes already implements some of them, hence it is sufficient to
 write a wrapper which just performs the data conversion and delegates
-all the real work to the library. Indeed this very strategy is adopted
+all the real work to the library. Indeed, this very strategy is adopted
 by the built-in \texttt{JGrapesCloudCast} implementation.
 
-The \api provided to developers can be seen in the diagram proposed in
-figure~\ref{fig:cloudypeer-peersampling-class}. All the basic
+The API provided to developers can be seen in the diagram proposed in
+Figure~\ref{fig:cloudypeer-peersampling-class}. All the basic
 functionalities are inherited by \texttt{GossipProtocol}, hence the
 \texttt{PeerSampler} only need to define the standard methods to
-interact with the network partial \view. As can be seen by looking at
+interact with the network partial view. As can be seen by looking at
 the \texttt{CloudCast} definition, all that is left for the actual
 protocol classes to specify is the instantiation mechanism and
 possibly methods to manage additional parameters.
@@ -428,18 +427,18 @@ possibly methods to manage additional parameters.
 \begin{figure}[h!]
   \hspace{-50pt}
   \includegraphics[width=1.3\textwidth]{cloudypeer-peersampling-classdiagram.pdf}
-  \caption{Details of the \texttt{CloudCast} \api}
+  \caption{Details of the \texttt{CloudCast} API}
   \label{fig:cloudypeer-peersampling-class}
 \end{figure}
 
-The offered \api is simple enough that a detailed description is not
-appropriate in this context. More information on the meaning of the
-various parameters can be found in the \javadoc of the various
+The offered API is simple enough that a detailed description is not
+needed in this context. More information on the meaning of the
+various parameters can be found in the JavaDoc of the various
 classes.
 
 \section{\emph{Epidemic broadcast} protocols}
 The module that concludes this overview of the \cloudypeer
-architecture is the one providing the infrastructure for the \epidemic
+architecture is the one providing the infrastructure for the epidemic
 protocols.
 
 \begin{figure}[h!]
@@ -451,33 +450,32 @@ protocols.
 \end{figure}
 
 The structure of the module is for itself quite simple and intuitive as
-can be noted analyzing the diagram shown in figure
-\ref{fig:cloudypeer-epidemicbroadcast-relations}. By taking into
-account the picture as a whole however it can be note that the module
-display a strong dependence factor. Indeed here it is possible to see how
-the \api infrastructure thus far defined comes into play to simplify
+can be noted analyzing the diagram shown in Figure~\ref{fig:cloudypeer-epidemicbroadcast-relations}. By taking into
+account the picture as a whole, however, it can be noted that the module
+display a strong dependence factor. Indeed, here it is possible to see how
+the API infrastructure thus far defined comes into play to simplify
 the development of high-level protocols. By heavily relaying on the
-other modules, the implementation of the two \epidemic broadcast
+other modules, the implementation of the two epidemic broadcast
 protocols result very simple and most importantly general.
 
 Figure~\ref{fig:cloudypeer-epidemicbroadcast-class} shows the main
 classes forming the module's architecture and details the exposed
 methods. Once again most of the functionalities are inherited from
 \texttt{GossipProtocol} and the remaining one should be already clear
-from previous considerations; refer to the \javadoc for further details.
+from previous considerations; refer to the JavaDoc for further details.
 
 \begin{figure}[h]
   \hspace{-50pt}
   \includegraphics[width=1.3\textwidth]{cloudypeer-epidemicbroadcast-classdiagram.pdf}
-  \caption{Details of the \textit{Epidemic broadcast} module \api}
+  \caption{Details of the \textit{Epidemic broadcast} module API}
   \label{fig:cloudypeer-epidemicbroadcast-class}
 \end{figure}
 
 At the current state the framework provides two built-in protocol
-implementations: \texttt{CloudPushPullAntiEntropy} and
-\texttt{FeedbackCounterRumorMongering}. As their names suggest, the
-former uses a \PUSHPULL\ strategy and displays support for the \cloud while
-the latter implements a standard \rumormongering algorithm with peer
+implementations: \texttt{Cloud\-Push\-Pull\-Anti\-Entropy} and
+\texttt{Feedback\-Counter\-Rumor\-Mongering}. As their names suggest, the
+former uses a \PUSHPULL\ strategy and displays support for the cloud while
+the latter implements a standard rumor mongering algorithm with peer
 feedback and termination based on counter.
 Even though the implementations follow closely what has been stated in
 section~\ref{sec:epidemicbroadcast}, in the following paragraphs are
@@ -487,13 +485,13 @@ clarifying the interactions with the various \cloudypeer components.
 \begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{cloudypeer-antientropy-peer.pdf}
-  \caption{Sequence diagram of an \antientropy\ cycle involving a remote
+  \caption{Sequence diagram of an anti entropy cycle involving a remote
     peer (\PUSHPULL\ strategy)}
   \label{fig:cloudypeer-sequence-antientropy-peer}
 \end{figure}
 
 Figure~\ref{fig:cloudypeer-sequence-antientropy-peer} shows an
-\antientropy cycle between two peers. As a first operation the
+anti entropy cycle between two peers. As a first operation the
 initiating peer $p$ queries its \texttt{Store} for the entries'
 metadata. These are sent, using the \networkhelper, to the remote
 peer $q$ which delegates to its \texttt{Store} instance the job of
@@ -508,29 +506,29 @@ update their respective \texttt{Store} and conclude the execution.
 \begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{cloudypeer-antientropy-cloud.pdf}
-  \caption{Sequence diagram of an \antientropy\ cycle involving the
-    \cloud\ (\PUSHPULL\ strategy)}
+  \caption{Sequence diagram of an anti entropy cycle involving the
+    cloud (\PUSHPULL\ strategy)}
   \label{fig:cloudypeer-sequence-antientropy-cloud}
 \end{figure}
 
 \ \\
 \noindent Figure~\ref{fig:cloudypeer-sequence-antientropy-cloud} displays the
-actions executed when an \antientropy cycle involves the \cloud. As
+actions executed when an anti entropy cycle involves the cloud. As
 can be seen all the computation is performed by the initiating peer
 which orchestrates the entire exchange. The followed steps are similar
 to the ones described for the previous case, however the passive
-nature of the \cloud causes a major difference: the whole data is
-transferred in both the direction. This fact means that data exchanged
-with the \cloud may display much higher bandwidth costs with respect
+nature of the cloud causes a major difference: the whole data is
+transferred in both the directions. This fact means that data exchanged
+with the cloud may display much higher bandwidth costs with respect
 to the same exchange between two peers. Fortunately, as it is
 discussed later, this problem does not have an high impact on the
 overall cost.
 
 \ \\
 \noindent The last diagram, shown in
-figure~\ref{fig:cloudypeer-sequence-rumormongering}, illustrate the
-behavior of the \rumormongering implementation. Here the similarities
-with the first case are much more evident. Indeed the higher half of the
+Figure~\ref{fig:cloudypeer-sequence-rumormongering}, illustrates the
+behavior of the rumor mongering implementation. Here the similarities
+with the first case are much more evident. Indeed, the higher half of the
 diagram display exactly the same operation. The few differences are
 represented by the fact that updates only flow in one direction and
 more importantly that the triggering factor is not the firing of a
@@ -540,14 +538,14 @@ update is available.
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{cloudypeer-rumormongering.pdf}
-  \caption{Sequence diagram of a \rumormongering\ cycle}
+  \caption{Sequence diagram of a rumor mongering cycle}
   \label{fig:cloudypeer-sequence-rumormongering}
 \end{figure}
 
 \clearpage
 \section{Building and using the framework}
-To conclude the analysis of the framework, in this section is
-explained how \cloudypeer can be compiled and used by developers to
+To conclude the analysis of the framework, this section explains
+how \cloudypeer can be compiled and used by developers to
 write their \ptop applications.
 
 As for the other library developed during the course of this thesis,
@@ -556,20 +554,20 @@ with the last version available at the time of this writing tagged
 with \thesistag.
 
 The distribution already contains all the \textit{Java} dependencies,
-including \jgrapes. Thus to build the framework it is sufficient to invoke the
+including \jgrapes. Thus to build the framework, it is sufficient to invoke the
 \textit{dist} target of the \textit{ant} build file. This operation will
 generate a directory named \textsf{dist/} containing the \textit{jar}
 files of \cloudypeer and all the other dependencies.
 
 At this point the framework can be used by simply adding the various
 \textit{jars} to the \textit{Java classpath}. To successfully use the
-\jgrapes based \peersampling protocol implementation however, the
+\jgrapes based peer sampling protocol implementation however, the
 \textit{Java} property ``java.library.path'' must be configured
 to include the directory containing all the relative native
 libraries. Such a directory is produced during the building process of
 \jgrapes under the name \textsf{dist}.
 
-The listing available in figure~\ref{lst:cloudypeer-example-app}
+The listing available in Figure~\ref{lst:cloudypeer-example-app}
 provide a fully working, even if minimal, application based on \cloudypeer.
 As can be noted the amount of code needed by the developer to setup
 the \cloudcast infrastructure is really small: skipping comments,
@@ -592,17 +590,17 @@ In this section are proposed some results showing the
 effectiveness of the framework in terms of \textit{news}
 distribution.
 
-Let's start by analyzing the delays in the delivery of \textit{news}
-considering a dynamic scenario. Figure
-\ref{fig:cloudypeer-oscillating-delays} match plot
+Let us start by analyzing the delays in the delivery of \textit{news}
+considering a dynamic scenario. Figure~
+\ref{fig:cloudypeer-oscillating-delays} match plot~
 \ref{fig:cloudcast-sim-oscillating-delays} which is re-proposed here
 for convenience. Due to lack of resources it has not been possible to
 perform the test under exactly the same conditions: the maximal network
 size had to be limited to $170$ nodes instead of $500$. However all
 the other parameters have been maintained: the experiment has lasted 2
 days with a new
-\textit{news} added each four hours. The \antientropy and
-\rumormongering protocols have been configured with a period of
+\textit{news} added each four hours. The anti entropy and
+rumor mongering protocols have been configured with a period of
 respectively $10$ and $1$ seconds.
 
 As can be seen the delays obtained by the \cloudypeer implementation
@@ -611,7 +609,7 @@ simulation.
 This variation can be partially attributed to
 the different network sizes, however it is our opinion that the
 improved result is achieved mostly thanks to the more elaborated
-\rumormongering protocol which, exploiting peer's feedback, is more
+rumor mongering protocol which, exploiting peer's feedback, is more
 effective in quickly diffusing updates.
 
 \begin{figure}[H]
@@ -646,15 +644,15 @@ Due to lack of time and resources it has not been possible to
 experiment on networks with a more significative size; future works may
 fill this gap by providing more exhaustive results.
 
-The data about node's exchanges shown in table~\ref{tbl:pushed-news}
+The data about node's exchanges shown in Table~\ref{tbl:pushed-news}
 displays a predictable scenario: the majority of the
-work is carried out by the \rumormongering protocol while \antientropy
+work is carried out by the rumor mongering protocol while anti entropy
 has a much smaller impact. Of more interest is the data regarding the
-number of news that have been pushed by \cloud, presented in
-table~\ref{tbl:cloud-news}: the mean values are really small compared
+number of news that have been pushed by cloud, presented in
+Table~\ref{tbl:cloud-news}: the mean values are really small compared
 to the total amount of updates transferred during the whole
 experiment. In particular it can be noted how the contribution of the
-\cloud never surpasses the $2\%$ of the total. This demonstrates once
+cloud never surpasses the $2\%$ of the total. This demonstrates once
 again the effectiveness of the \cloudcast approach and at the same
 time proves the correctness of the implementation.
 
@@ -667,30 +665,30 @@ time proves the correctness of the implementation.
   \hline
 
   \multirow{2}{*}{32} &
-        \antientropy & 3.32 & 5.45 & 0 & 1 & 3 & 5 & 11 \\
+        anti entropy & 3.32 & 5.45 & 0 & 1 & 3 & 5 & 11 \\
 
-       &\rumormongering & 8.57  & 9.89 & 1 & 6 & 8 & 11 & 16\\
+       &rumor mongering & 8.57  & 9.89 & 1 & 6 & 8 & 11 & 16\\
 
   \hline
   \multirow{2}{*}{64} &
-        \antientropy & 2.87 & 4.32 & 0 & 1 & 3 & 4 & 10\\
+        anti entropy & 2.87 & 4.32 & 0 & 1 & 3 & 4 & 10\\
 
-      & \rumormongering & 9.08 & 10.93 & 2 & 7 & 9 & 11 & 21\\
+      & rumor mongering & 9.08 & 10.93 & 2 & 7 & 9 & 11 & 21\\
 
   \hline
   \multirow{2}{*}{128} &
-        \antientropy & 2.52 & 4.15 & 0 & 1 & 2 & 4 & 14\\
+        anti entropy & 2.52 & 4.15 & 0 & 1 & 2 & 4 & 14\\
 
-      & \rumormongering & 9.35 & 13.28 & 1 & 7 & 9 & 12 & 22 \\
+      & rumor mongering & 9.35 & 13.28 & 1 & 7 & 9 & 12 & 22 \\
 
   \hline
   \multirow{2}{*}{160} &
-        \antientropy & 2.80 & 5.66 & 0 & 1 & 2 & 4 & 16\\
+        anti entropy & 2.80 & 5.66 & 0 & 1 & 2 & 4 & 16\\
 
-      & \rumormongering & 9.027 & 13.54 & 1 & 6 & 9 & 11 & 24 \\
+      & rumor mongering & 9.027 & 13.54 & 1 & 6 & 9 & 11 & 24 \\
   \hline
   \end{tabular}
-  \caption{Statistic on the \textit{news} pushed by the \epidemic
+  \caption{Statistic on the \textit{news} pushed by the epidemic
     broadcast protocols}
   \label{tbl:pushed-news}
 \end{table}
@@ -708,6 +706,6 @@ time proves the correctness of the implementation.
   160 & 1920 & 1.72\% &33.03 & 44.12 & 26 & 27 & 30 & 40.5 & 44 \\
   \hline
   \end{tabular}
-  \caption{Statistic on the \textit{news} obtained via the \cloud}
+  \caption{Statistic on the \textit{news} obtained via the cloud}
   \label{tbl:cloud-news}
 \end{table}
